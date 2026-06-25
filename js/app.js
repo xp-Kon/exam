@@ -30,8 +30,8 @@ function handleRoute() {
   const name=(location.hash.slice(1)||'dashboard').split('?')[0];
   currentRoute=name;
   document.querySelectorAll('.nav-item').forEach(e=>e.classList.toggle('active',e.dataset.route===name));
-  ({dashboard:renderDashboard,browse:renderBrowse,practice:renderPractice,random:renderRandom,exam:renderExam,errors:renderErrors,favorites:renderFavorites}[name]||renderDashboard)();
   window.__optClick=null;
+  ({dashboard:renderDashboard,browse:renderBrowse,practice:renderPractice,random:renderRandom,exam:renderExam,errors:renderErrors,favorites:renderFavorites}[name]||renderDashboard)();
   const s=Store.getStats();
   $('progressDisplay').innerHTML=`<i class="fas fa-chart-line"></i> ${s.totalQuestions?Math.round(s.totalDone/s.totalQuestions*100):0}% (${s.totalDone}/${s.totalQuestions})`;
 }
