@@ -50,7 +50,7 @@ function navQuestion(dir) {
 
 // ========== RENDER QUESTION ==========
 function renderQuestion(q,opts={}) {
-  const {showAnswer=false,chosen='',interactive=false,index=''}=opts;
+  const {showAnswer=false,chosen='',interactive=false,index='',noSubmit=false}=opts;
   const fav=Store.isFavorite(q.id);
   const result=Store.getQuestionResult(q.id);
   let cardClass='q-card fade-in';
@@ -65,9 +65,11 @@ function renderQuestion(q,opts={}) {
     if(interactive&&!showAnswer)cls+=' selectable';
     if(isChosen)cls+=' selected';
     if(showAnswer){cls+=' disabled';if(q.answer.includes(l))cls+=' reveal-correct';else if(isChosen)cls+=' reveal-wrong';}
-    const onclick=interactive&&!showAnswer?` onclick="window.__optClick(this,'${l}',${q.type==='multiple'})"`:'';
+    const onclick=interactive&&!showAnswer?` onclick="window.__optClick(this,'${l}',false)"`:'';
     return `<div class="${cls}"${onclick}><span class="q-option-label">${l}</span><span class="q-option-text">${q.options[l]}</span></div>`;
   }).join(''):'<div class="text-muted">无选项</div>';
+
+  const submitBtnHTML=(interactive&&!showAnswer&&q.type==='multiple'&&!noSubmit)?`<div style="text-align:center;margin-top:12px"><button class="btn btn-primary btn-sm" onclick="window.__submitMulti()"><i class="fas fa-check"></i> 提交答案</button></div>`:'';
 
   const sourceTag=q.source?`<span class="q-source">${q.source}</span>`:'';
   return `<div class="${cardClass}" data-id="${q.id}">
@@ -87,6 +89,7 @@ function renderQuestion(q,opts={}) {
     ${showAnswer?`<div class="q-answer-reveal ${chosen&&isCorrect(q,chosen)?'correct':'wrong'}">
       <i class="fas ${chosen&&isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'}"></i>
       正确答案：${answerText(q)}${chosen?` | 你的选择：${chosen}`:''}</div>`:''}
+    ${submitBtnHTML}
   </div>`;
 }
 
@@ -215,7 +218,7 @@ function renderBrowse() {
     </div>`:''}
   </div>`;
   const inp=$('browseSearch');
-  if(inp){inp.focus();inp.oninput=()=>{state.currentFilter=inp.value;state.browsePage=1;renderBrowse();}}
+  if(inp){inp.oninput=()=>{state.currentFilter=inp.value;state.browsePage=1;renderBrowse();}}
 }
 
 // ========== PAGE: PRACTICE ==========
@@ -238,10 +241,16 @@ function renderPractice() {
   </div>`;
 
   let selected='';
-  window.__optClick=(el,opt,isMulti)=>{
+  window.__optClick=(el,opt)=>{
     const q=QUESTION_BANK[state.practiceId-1];
-    if(isMulti){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
+    if(q.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
     else{selected=opt;revealAnswer('practiceArea','practiceFeedback',q,opt,`第 ${q.id} 题`);Store.setPracticePos(state.practiceId);}
+  };
+  window.__submitMulti=()=>{
+    const q=QUESTION_BANK[state.practiceId-1];
+    const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
+    if(!chosen)return;
+    revealAnswer('practiceArea','practiceFeedback',q,chosen,`第 ${q.id} 题`);Store.setPracticePos(state.practiceId);
   };
 }
 
@@ -273,10 +282,16 @@ function showRandomQuestion() {
 
   let selected='';
   const curIdx=state.randomIdx;
-  window.__optClick=(el,opt,isMulti)=>{
+  window.__optClick=(el,opt)=>{
     const q=QUESTION_BANK.find(x=>x.id===state.randomIds[Math.min(curIdx,state.randomIds.length-1)]);
-    if(isMulti){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
+    if(q.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
     else{selected=opt;revealAnswer('randArea','randFeedback',q,opt,`随机 #${curIdx+1}`);}
+  };
+  window.__submitMulti=()=>{
+    const q=QUESTION_BANK.find(x=>x.id===state.randomIds[Math.min(curIdx,state.randomIds.length-1)]);
+    const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
+    if(!chosen)return;
+    revealAnswer('randArea','randFeedback',q,chosen,`随机 #${curIdx+1}`);
   };
 }
 
@@ -323,7 +338,7 @@ function showExamQuestion(idx) {
         <span style="font-size:.9rem;color:var(--text-secondary)">${answered}/${total} 已答</span></div></div>
     <div class="exam-progress"><div class="info"><span>第 ${idx+1} 题</span><span>${idx+1}/${total}</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:${(idx+1)/total*100}%"></div></div></div>
-    <div id="examArea">${renderQuestion(q,{interactive:true,chosen,index:`第 ${idx+1} 题`})}</div>
+    <div id="examArea">${renderQuestion(q,{interactive:true,chosen,index:`第 ${idx+1} 题`,noSubmit:true})}</div>
     <div style="display:flex;justify-content:space-between;margin-top:16px">
       <button class="btn btn-secondary btn-sm" onclick="clearInterval(state.examTimer);showExamQuestion(${idx-1})" ${idx<=0?'disabled':''}><i class="fas fa-chevron-left"></i> 上一题</button>
       <button class="btn btn-secondary btn-sm" onclick="clearInterval(state.examTimer);showExamQuestion(${idx+1})">跳过 <i class="fas fa-forward"></i></button>
@@ -331,13 +346,14 @@ function showExamQuestion(idx) {
     ${idx===total-1?`<div style="text-align:center;margin-top:16px"><button class="btn btn-success" onclick="clearInterval(state.examTimer);finishExam()"><i class="fas fa-check-double"></i> 交卷</button></div>`:''}
   </div>`;
 
-  window.__optClick=(el,opt,isMulti)=>{
+  window.__optClick=(el,opt)=>{
     const qqq=state.examQuestions.find((_,i)=>i===idx);
-    if(isMulti){el.classList.toggle('selected');state.examAnswers[idx]=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
+    if(qqq.type==='multiple'){el.classList.toggle('selected');state.examAnswers[idx]=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
     else state.examAnswers[idx]=opt;
     const a=Object.keys(state.examAnswers).length,tt=state.examQuestions.length;
     const hs=main.querySelector('.page-header span:last-child');if(hs)hs.textContent=`${a}/${tt} 已答`;
   };
+  window.__submitMulti=()=>{}; // 考试模式无需提交按钮（已有交卷按钮）
 }
 
 function finishExam() {

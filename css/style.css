@@ -589,11 +589,12 @@ body {
   }
   .sidebar.open { transform: translateX(0); }
   .overlay.show { display: block; }
-  .main-content { padding: 16px; }
+  .main-content { padding: 16px; padding-bottom: 80px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .exam-details { grid-template-columns: 1fr; }
   .page-header { flex-direction: column; align-items: flex-start; }
   .search-box { max-width: 100%; }
+  .kbd-hint { display: none; }
 }
 
 @media (max-width: 480px) {
