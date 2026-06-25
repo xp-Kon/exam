@@ -129,6 +129,27 @@ document.addEventListener('keydown',e=>{
   if(k==='S'){const c=main.querySelector('.q-card:last-child .fav-btn');if(c)c.click();}
 });
 
+// ========== TOUCH SWIPE (MOBILE) ==========
+(function(){
+  let startX=0,startY=0,moved=false;
+  main.addEventListener('touchstart',e=>{
+    if(!['practice','random'].includes(currentRoute))return;
+    const t=e.touches[0];startX=t.clientX;startY=t.clientY;moved=false;
+  },{passive:true});
+  main.addEventListener('touchmove',e=>{
+    if(!['practice','random'].includes(currentRoute))return;
+    const t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>10)moved=true;
+  },{passive:true});
+  main.addEventListener('touchend',e=>{
+    if(!moved)return;
+    const dx=e.changedTouches[0].clientX-startX;
+    if(Math.abs(dx)<50)return;
+    if(dx<0)navQuestion(1);  // 左滑下一题
+    else navQuestion(-1);     // 右滑上一题
+  });
+})();
+
 // ========== ANSWER REVEAL HELPERS (SHARED) ==========
 function revealAnswer(areaId,feedbackId,q,chosen,nextLabel) {
   const area=$(areaId);if(!area)return;
