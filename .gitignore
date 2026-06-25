@@ -1,0 +1,8 @@
+# 忽略临时文件
+*.md
+.DS_Store
+Thumbs.db
+
+# 忽略解析脚本
+parse-questions.js
+ponytail-tmp/
