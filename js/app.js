@@ -19,6 +19,7 @@ function shuffle(a) { const r=[...a]; for(let i=r.length-1;i>0;i--){const j=Math
 function qLabel(q) { return q.type==='fill'?'填空题':q.type==='single'?'单选题':'多选题'; }
 function answerText(q) { return q.answer.join(''); }
 function isCorrect(q,chosen) { const c=[...chosen].sort(),a=[...q.answer].sort(); return c.length===a.length&&c.every((v,i)=>v===a[i]); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function shuffleQuestion(q) {
   if(!q.options) return q;
   const entries=shuffle(Object.entries(q.options));
@@ -89,19 +90,17 @@ function renderQuestion(q,opts={}) {
   let submitBtnHTML='';
   if(q.type==='fill'){
     const blanks=q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`).join('');
-    // 将 ______ / （ ） / ( ) 替换为输入框
+    // 将 ______ / （ ） / ( ) 替换为输入框（先转义题干防 HTML 注入）
+    const safeQ=esc(q.question);
     let bi=0;
-    optionsHTML=q.question.replace(FILL_RE,()=>{
+    optionsHTML=safeQ.replace(FILL_RE,()=>{
       const inp=q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`);
-      // 对于单空直接替换，多空用编号列表
       if(q.answer.length===1) return inp[0];
-      // 多空时返回所有输入框（只在第一次替换时返回全部）
       if(bi===0){bi++;return inp.join(' ');}
-      return ''; // 后续占位符清空
+      return '';
     });
-    // 如果题目里没有占位符但仍是填空题，在题干后追加输入框
     if(!FILL_RE.test(q.question)){
-      optionsHTML=q.question+'<div style="margin-top:12px">'+q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`).join(' ')+'</div>';
+      optionsHTML=safeQ+'<div style="margin-top:12px">'+q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`).join(' ')+'</div>';
     }
     if(interactive&&!showAnswer&&!noSubmit){
       submitBtnHTML=`<div style="text-align:center;margin-top:14px"><button class="btn btn-primary btn-sm" onclick="window.__submitFill()"><i class="fas fa-check"></i> 提交答案</button></div>`;
@@ -126,7 +125,7 @@ function renderQuestion(q,opts={}) {
       if(isChosen)cls+=' selected';
       if(showAnswer){cls+=' disabled';if(q.answer.includes(l))cls+=' reveal-correct';else if(isChosen)cls+=' reveal-wrong';}
       const onclick=interactive&&!showAnswer?` onclick="window.__optClick(this,'${l}',false)"`:'';
-      return `<div class="${cls}"${onclick}><span class="q-option-label">${l}</span><span class="q-option-text">${q.options[l]}</span></div>`;
+      return `<div class="${cls}"${onclick}><span class="q-option-label">${l}</span><span class="q-option-text">${esc(q.options[l])}</span></div>`;
     }).join(''):'<div class="text-muted">无选项</div>';
 
     submitBtnHTML=(interactive&&!showAnswer&&q.type==='multiple'&&!noSubmit)?`<div style="text-align:center;margin-top:12px"><button class="btn btn-primary btn-sm" onclick="window.__submitMulti()"><i class="fas fa-check"></i> 提交答案</button></div>`:'';
@@ -134,16 +133,16 @@ function renderQuestion(q,opts={}) {
 
   const sourceTag=q.source?`<span class="q-source">${q.source}</span>`:'';
   // 填空题：questionText 已含输入框，q-options 留空
-  const questionText=q.type==='fill'?optionsHTML:q.question;
+  const questionText=q.type==='fill'?optionsHTML:esc(q.question);
   const optionsDiv=q.type==='fill'?'':`<div class="q-options" data-multi="${q.type==='multiple'}">${optionsHTML}</div>`;
   const answerReveal=q.type==='fill'?'':(
     showAnswer?`<div class="q-answer-reveal ${chosen&&isCorrect(q,chosen)?'correct':'wrong'}">
       <i class="fas ${chosen&&isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'}"></i>
-      正确答案：${answerText(q)}${chosen?` | 你的选择：${chosen}`:''}</div>`:''
+      正确答案：${esc(answerText(q))}${chosen?` | 你的选择：${esc(chosen)}`:''}</div>`:''
   );
   const fillReveal=q.type==='fill'&&showAnswer?`<div class="q-answer-reveal ${chosen?isCorrect(q,chosen)?'correct':'wrong':''}">
       <i class="fas ${chosen?(isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'):''}"></i>
-      正确答案：${q.answer.join('；')}</div>`:'';
+      正确答案：${q.answer.map(a=>esc(a)).join('；')}</div>`:'';
   return `<div class="${cardClass}" data-id="${q.id}">
     <div class="q-header">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -247,7 +246,7 @@ function handleFillSubmit(areaId, feedbackId, q, nextLabel) {
   // 追加答案揭示
   const revealHTML = `<div class="q-answer-reveal ${ok?'correct':'wrong'}">
     <i class="fas ${ok?'fa-check-circle':'fa-times-circle'}"></i>
-    正确答案：${q.answer.join('；')}</div>`;
+    正确答案：${q.answer.map(a=>esc(a)).join('；')}</div>`;
   area.querySelector('.q-card').insertAdjacentHTML('beforeend', revealHTML);
   const fb = $(feedbackId);
   if(fb) fb.innerHTML=`<div style="text-align:center;padding:12px;background:${ok?'var(--bg-correct)':'var(--bg-wrong)'};border-radius:var(--radius-sm)">
@@ -327,13 +326,13 @@ function renderBrowse() {
           <span class="q-number">#${x.id}</span><span class="q-type-badge ${x.type}">${qLabel(x)}</span>
           ${r==='correct'?'<i class="fas fa-check-circle" style="color:var(--green);margin-left:6px"></i>':r==='wrong'?'<i class="fas fa-times-circle" style="color:var(--accent);margin-left:6px"></i>':''}
         </div><button class="icon-btn-sm fav-btn ${Store.isFavorite(x.id)?'active':''}" data-fav="${x.id}"><i class="fa${Store.isFavorite(x.id)?'s':'r'} fa-star"></i></button></div>
-        <div class="q-text">${x.question}</div>
+        <div class="q-text">${esc(x.question)}</div>
         <div class="q-options" style="margin-bottom:12px">
-          ${LABELS.map(l=>x.options&&x.options[l]?`<div class="q-option disabled"><span class="q-option-label">${l}</span><span class="q-option-text">${x.options[l]}</span></div>`:'').join('')}
+          ${LABELS.map(l=>x.options&&x.options[l]?`<div class="q-option disabled"><span class="q-option-label">${l}</span><span class="q-option-text">${esc(x.options[l])}</span></div>`:'').join('')}
         </div>
         <details style="cursor:pointer"><summary style="color:var(--blue);font-weight:600;font-size:.9rem"><i class="fas fa-eye"></i> 查看答案</summary>
           <div style="margin-top:10px;padding:10px 14px;background:rgba(21,101,192,.06);border:1px solid rgba(21,101,192,.15);border-radius:var(--radius-sm);color:var(--blue);font-weight:600">
-            <i class="fas fa-check-circle"></i> 正确答案：${answerText(x)}</div></details>
+            <i class="fas fa-check-circle"></i> 正确答案：${esc(answerText(x))}</div></details>
       </div>`;}).join(''):'<div class="empty-state"><i class="fas fa-search"></i><h3>未找到匹配题目</h3><p>试试其他关键词</p></div>'}
     ${pages>1?`<div class="pagination">
       <button class="page-btn" data-page="${page-1}" ${page<=1?'disabled':''}><i class="fas fa-chevron-left"></i></button>
