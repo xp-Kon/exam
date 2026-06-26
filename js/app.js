@@ -174,6 +174,11 @@ main.addEventListener('click',e=>{
 
 // ========== KEYBOARD ==========
 document.addEventListener('keydown',e=>{
+  // 填空题输入框：回车提交
+  if(e.target.tagName==='INPUT'&&e.target.classList.contains('fill-input')){
+    if(e.key==='Enter'){e.preventDefault();if(window.__submitFill)window.__submitFill();}
+    return;
+  }
   if(e.target.tagName==='INPUT'&&e.target.id!=='browseSearch')return;
   if(!['practice','random','exam'].includes(currentRoute))return;
   const k=e.key.toUpperCase();
