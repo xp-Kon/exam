@@ -166,6 +166,29 @@ body {
 }
 .reset-btn:hover { background: rgba(198,40,40,0.4); color: white; }
 
+/* Subject Select */
+.subject-select { padding: 0 4px; }
+.subject-select select {
+  width: 100%; padding: 8px 12px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-sidebar); font-size: 0.85rem; cursor: pointer;
+  transition: all var(--transition);
+}
+.subject-select select:focus { outline: none; border-color: var(--accent-light); }
+.subject-select select option { background: var(--bg-sidebar); color: var(--text-sidebar); }
+
+/* Fill-in Input */
+.fill-input {
+  border: none; border-bottom: 2px solid var(--blue);
+  background: transparent; color: var(--text-primary);
+  font-size: 0.95rem; padding: 4px 8px; width: 120px;
+  transition: border-color var(--transition); font-family: inherit;
+}
+.fill-input:focus { outline: none; border-bottom-color: var(--accent); }
+.fill-input.correct { border-bottom-color: var(--green); background: rgba(46,125,50,0.06); }
+.fill-input.wrong   { border-bottom-color: var(--accent); background: rgba(198,40,40,0.06); }
+.fill-input.disabled { pointer-events: none; opacity: 0.9; }
+
 /* Main Content */
 .main-content {
   grid-row: 2;

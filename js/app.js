@@ -9,12 +9,13 @@ const state = {
 };
 const $ = id => document.getElementById(id), main = $('mainContent');
 const LABELS = ['A','B','C','D'];
+const FILL_RE = /_{2,}|（\s*）|\(\s*\)/g;  // 匹配填空占位符
 const PER_PAGE = 15;
 let currentRoute = 'dashboard';
 
 // ========== UTILITY ==========
 function shuffle(a) { const r=[...a]; for(let i=r.length-1;i>0;i--){const j=Math.random()*i|0;[r[i],r[j]]=[r[j],r[i]]} return r; }
-function qLabel(q) { return q.type==='single'?'单选题':'多选题'; }
+function qLabel(q) { return q.type==='fill'?'填空题':q.type==='single'?'单选题':'多选题'; }
 function answerText(q) { return q.answer.join(''); }
 function isCorrect(q,chosen) { const c=[...chosen].sort(),a=[...q.answer].sort(); return c.length===a.length&&c.every((v,i)=>v===a[i]); }
 function showModal(title,body,onConfirm) {
@@ -24,6 +25,20 @@ function showModal(title,body,onConfirm) {
   $('modalCancel').onclick=()=>$('confirmModal').classList.add('hidden');
 }
 function navigate(name) { location.hash=name; }
+
+// ========== SUBJECT SWITCHING ==========
+window.__switchSubject = (key) => {
+  Store.switchSubject(key);
+  state.practiceId = Store.getPracticePos();
+  state.randomIds = [];
+  state.currentFilter = '';
+  handleRoute();
+  // 更新侧栏题数和 select 状态
+  const sel = $('subjectSelect');
+  if(sel) sel.value = key;
+  const qc = document.querySelector('.q-count');
+  if(qc) qc.textContent = `共 ${QUESTION_BANK.length} 题`;
+};
 
 // ========== ROUTING ==========
 function handleRoute() {
@@ -58,20 +73,65 @@ function renderQuestion(q,opts={}) {
   else if (result==='correct') cardClass+=' correct';
   else if (result==='wrong') cardClass+=' wrong';
 
-  const optionsHTML=q.options?LABELS.map(l=>{
-    if(!q.options[l])return '';
-    const isChosen=chosen.includes(l);
-    let cls='q-option';
-    if(interactive&&!showAnswer)cls+=' selectable';
-    if(isChosen)cls+=' selected';
-    if(showAnswer){cls+=' disabled';if(q.answer.includes(l))cls+=' reveal-correct';else if(isChosen)cls+=' reveal-wrong';}
-    const onclick=interactive&&!showAnswer?` onclick="window.__optClick(this,'${l}',false)"`:'';
-    return `<div class="${cls}"${onclick}><span class="q-option-label">${l}</span><span class="q-option-text">${q.options[l]}</span></div>`;
-  }).join(''):'<div class="text-muted">无选项</div>';
+  // ---------- 填空题渲染 ----------
+  let optionsHTML='';
+  let submitBtnHTML='';
+  if(q.type==='fill'){
+    const blanks=q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`).join('');
+    // 将 ______ / （ ） / ( ) 替换为输入框
+    let bi=0;
+    optionsHTML=q.question.replace(FILL_RE,()=>{
+      const inp=q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`);
+      // 对于单空直接替换，多空用编号列表
+      if(q.answer.length===1) return inp[0];
+      // 多空时返回所有输入框（只在第一次替换时返回全部）
+      if(bi===0){bi++;return inp.join(' ');}
+      return ''; // 后续占位符清空
+    });
+    // 如果题目里没有占位符但仍是填空题，在题干后追加输入框
+    if(!FILL_RE.test(q.question)){
+      optionsHTML=q.question+'<div style="margin-top:12px">'+q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`).join(' ')+'</div>';
+    }
+    if(interactive&&!showAnswer&&!noSubmit){
+      submitBtnHTML=`<div style="text-align:center;margin-top:14px"><button class="btn btn-primary btn-sm" onclick="window.__submitFill()"><i class="fas fa-check"></i> 提交答案</button></div>`;
+    }
+    // 显示答案时填入正确值
+    if(showAnswer){
+      setTimeout(()=>{
+        document.querySelectorAll('.fill-input').forEach((inp,i)=>{
+          if(chosen&&chosen[i])inp.value=chosen[i];
+          inp.classList.add(isCorrect(q,chosen)?'correct':'wrong');
+        });
+      },0);
+    }
+  } else {
+    // ---------- 选择题渲染 ----------
+    optionsHTML=q.options?LABELS.map(l=>{
+      if(!q.options[l])return '';
+      const isChosen=chosen.includes(l);
+      let cls='q-option';
+      if(interactive&&!showAnswer)cls+=' selectable';
+      if(isChosen)cls+=' selected';
+      if(showAnswer){cls+=' disabled';if(q.answer.includes(l))cls+=' reveal-correct';else if(isChosen)cls+=' reveal-wrong';}
+      const onclick=interactive&&!showAnswer?` onclick="window.__optClick(this,'${l}',false)"`:'';
+      return `<div class="${cls}"${onclick}><span class="q-option-label">${l}</span><span class="q-option-text">${q.options[l]}</span></div>`;
+    }).join(''):'<div class="text-muted">无选项</div>';
 
-  const submitBtnHTML=(interactive&&!showAnswer&&q.type==='multiple'&&!noSubmit)?`<div style="text-align:center;margin-top:12px"><button class="btn btn-primary btn-sm" onclick="window.__submitMulti()"><i class="fas fa-check"></i> 提交答案</button></div>`:'';
+    submitBtnHTML=(interactive&&!showAnswer&&q.type==='multiple'&&!noSubmit)?`<div style="text-align:center;margin-top:12px"><button class="btn btn-primary btn-sm" onclick="window.__submitMulti()"><i class="fas fa-check"></i> 提交答案</button></div>`:'';
+  }
 
   const sourceTag=q.source?`<span class="q-source">${q.source}</span>`:'';
+  // 填空题：questionText 已含输入框，q-options 留空
+  const questionText=q.type==='fill'?optionsHTML:q.question;
+  const optionsDiv=q.type==='fill'?'':`<div class="q-options" data-multi="${q.type==='multiple'}">${optionsHTML}</div>`;
+  const answerReveal=q.type==='fill'?'':(
+    showAnswer?`<div class="q-answer-reveal ${chosen&&isCorrect(q,chosen)?'correct':'wrong'}">
+      <i class="fas ${chosen&&isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'}"></i>
+      正确答案：${answerText(q)}${chosen?` | 你的选择：${chosen}`:''}</div>`:''
+  );
+  const fillReveal=q.type==='fill'&&showAnswer?`<div class="q-answer-reveal ${chosen&&isCorrect(q,chosen)?'correct':'wrong'}">
+      <i class="fas ${chosen&&isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'}"></i>
+      正确答案：${q.answer.join('；')}</div>`:'';
   return `<div class="${cardClass}" data-id="${q.id}">
     <div class="q-header">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -84,11 +144,9 @@ function renderQuestion(q,opts={}) {
         </button>
       </div>
     </div>
-    <div class="q-text">${q.question}</div>
-    <div class="q-options" data-multi="${q.type==='multiple'}">${optionsHTML}</div>
-    ${showAnswer?`<div class="q-answer-reveal ${chosen&&isCorrect(q,chosen)?'correct':'wrong'}">
-      <i class="fas ${chosen&&isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'}"></i>
-      正确答案：${answerText(q)}${chosen?` | 你的选择：${chosen}`:''}</div>`:''}
+    <div class="q-text">${questionText}</div>
+    ${optionsDiv}
+    ${answerReveal}${fillReveal}
     ${submitBtnHTML}
   </div>`;
 }
@@ -149,6 +207,32 @@ document.addEventListener('keydown',e=>{
     else navQuestion(-1);     // 右滑上一题
   });
 })();
+
+// ========== FILL-IN ANSWER SUBMIT ==========
+function handleFillSubmit(areaId, feedbackId, q, nextLabel) {
+  const inputs = document.querySelectorAll(`#${areaId} .fill-input`);
+  const userAns = [...inputs].map(inp => inp.value.trim());
+  const ok = userAns.length === q.answer.length &&
+             userAns.every((v, i) => v.toLowerCase() === q.answer[i].toLowerCase());
+  ok ? Store.addCorrect(q.id) : Store.addError(q.id);
+  // 高亮输入框
+  inputs.forEach((inp, i) => {
+    inp.classList.add(ok ? 'correct' : 'wrong');
+    if (!ok && q.answer[i]) inp.setAttribute('title', `正确：${q.answer[i]}`);
+  });
+  const area = $(areaId);
+  if (!area) return;
+  // 追加答案揭示
+  const revealHTML = `<div class="q-answer-reveal ${ok?'correct':'wrong'}">
+    <i class="fas ${ok?'fa-check-circle':'fa-times-circle'}"></i>
+    正确答案：${q.answer.join('；')}</div>`;
+  area.querySelector('.q-card').insertAdjacentHTML('beforeend', revealHTML);
+  const fb = $(feedbackId);
+  if(fb) fb.innerHTML=`<div style="text-align:center;padding:12px;background:${ok?'var(--bg-correct)':'var(--bg-wrong)'};border-radius:var(--radius-sm)">
+    <strong style="color:${ok?'var(--green)':'var(--accent)'}"><i class="fas ${ok?'fa-check-circle':'fa-times-circle'}"></i> ${ok?'回答正确！':'回答错误'}</strong>
+    <span style="margin-left:12px"><button class="btn btn-primary btn-sm" onclick="navQuestion(1)">下一题 <i class="fas fa-chevron-right"></i></button></span>
+  </div>`;
+}
 
 // ========== ANSWER REVEAL HELPERS (SHARED) ==========
 function revealAnswer(areaId,feedbackId,q,chosen,nextLabel) {
@@ -273,6 +357,11 @@ function renderPractice() {
     if(!chosen)return;
     revealAnswer('practiceArea','practiceFeedback',q,chosen,`第 ${q.id} 题`);Store.setPracticePos(state.practiceId);
   };
+  window.__submitFill=()=>{
+    const q=QUESTION_BANK[state.practiceId-1];
+    handleFillSubmit('practiceArea','practiceFeedback',q,`第 ${q.id} 题`);
+    Store.setPracticePos(state.practiceId);
+  };
 }
 
 // ========== PAGE: RANDOM ==========
@@ -313,6 +402,10 @@ function showRandomQuestion() {
     const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
     if(!chosen)return;
     revealAnswer('randArea','randFeedback',q,chosen,`随机 #${curIdx+1}`);
+  };
+  window.__submitFill=()=>{
+    const q=QUESTION_BANK.find(x=>x.id===state.randomIds[Math.min(curIdx,state.randomIds.length-1)]);
+    handleFillSubmit('randArea','randFeedback',q,`随机 #${curIdx+1}`);
   };
 }
 
@@ -436,6 +529,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('sidebarToggle').onclick=()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');};
   $('overlay').onclick=()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');};
   $('resetBtn').onclick=()=>showModal('重置数据','确定要重置所有练习记录、错题和收藏吗？此操作不可撤销。',()=>{Store.resetAll();navigate('dashboard');});
+  // 初始化科目选择器
+  const sel=$('subjectSelect');
+  if(sel){sel.value=currentSubject;}
+  const qc=document.querySelector('.q-count');
+  if(qc){qc.textContent=`共 ${QUESTION_BANK.length} 题`;}
   // Keyboard hint
   const h=document.createElement('div');h.className='kbd-hint';
   h.innerHTML='快捷键: <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> 选答案 · <kbd>←</kbd><kbd>→</kbd> 翻题 · <kbd>S</kbd> 收藏';
