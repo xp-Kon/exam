@@ -321,7 +321,7 @@ function renderBrowse() {
         </div><button class="icon-btn-sm fav-btn ${Store.isFavorite(x.id)?'active':''}" data-fav="${x.id}"><i class="fa${Store.isFavorite(x.id)?'s':'r'} fa-star"></i></button></div>
         <div class="q-text">${x.question}</div>
         <div class="q-options" style="margin-bottom:12px">
-          ${LABELS.map(l=>x.options[l]?`<div class="q-option disabled"><span class="q-option-label">${l}</span><span class="q-option-text">${x.options[l]}</span></div>`:'').join('')}
+          ${LABELS.map(l=>x.options&&x.options[l]?`<div class="q-option disabled"><span class="q-option-label">${l}</span><span class="q-option-text">${x.options[l]}</span></div>`:'').join('')}
         </div>
         <details style="cursor:pointer"><summary style="color:var(--blue);font-weight:600;font-size:.9rem"><i class="fas fa-eye"></i> 查看答案</summary>
           <div style="margin-top:10px;padding:10px 14px;background:rgba(21,101,192,.06);border:1px solid rgba(21,101,192,.15);border-radius:var(--radius-sm);color:var(--blue);font-weight:600">
