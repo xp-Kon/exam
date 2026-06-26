@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OS_XLSX   = ROOT / "操作系统题库_含填空题.xlsx"
 DB_XLSX   = ROOT / "数据库题库.xlsx"
 MARX_XLSX = ROOT / "马克思题库.xlsx"
+JSP_XLSX  = ROOT / "JSP_Web编程题库.xlsx"
 OUT_JS    = ROOT / "js" / "data.js"
 
 # ---------------------------------------------------------------------------
@@ -177,22 +178,24 @@ def write_data_js(subjects: dict, out: Path):
 def main():
     subjects: dict[str, dict] = {}
 
-    # —— 马克思（从备份的旧 data.js 读取，避免被本次脚本覆盖）——
-    old_data = ROOT / "js" / "data_old.js"
-    if old_data.exists():
+    # —— 马克思 ——
+    if MARX_XLSX.exists():
         try:
-            marx_qs = load_marx_data_js(old_data)
-            # 确保 id 顺序
-            for idx, q in enumerate(marx_qs, 1):
-                q["id"] = idx
+            marx_qs = parse_xlsx(MARX_XLSX)
             subjects["marx"] = {"name": "马克思主义原理", "questions": marx_qs}
-            print(f"[OK] 马克思 {len(marx_qs)} 题")
-            # 导出 Excel（便于后续扩充）
-            if not MARX_XLSX.exists():
-                export_marx_xlsx(marx_qs, MARX_XLSX)
-                print(f"[OK] 已导出 {MARX_XLSX}")
+            print(f"[OK] 马克思 {len(marx_qs)} 题（从 Excel 导入）")
         except Exception as e:
-            print(f"[WARN] 读取旧 data.js 失败：{e}")
+            print(f"[WARN] 从 Excel 读取马克思题库失败：{e}")
+            old_data = ROOT / "js" / "data_old.js"
+            if old_data.exists():
+                try:
+                    marx_qs = load_marx_data_js(old_data)
+                    for idx, q in enumerate(marx_qs, 1):
+                        q["id"] = idx
+                    subjects["marx"] = {"name": "马克思主义原理", "questions": marx_qs}
+                    print(f"[OK] 马克思 {len(marx_qs)} 题（从 data_old.js 导入）")
+                except Exception as e2:
+                    print(f"[WARN] 读取旧 data.js 也失败：{e2}")
 
     # —— 操作系统 ——
     if OS_XLSX.exists():
@@ -205,6 +208,12 @@ def main():
         db_qs = parse_xlsx(DB_XLSX)
         subjects["db"] = {"name": "数据库", "questions": db_qs}
         print(f"[OK] 数据库 {len(db_qs)} 题")
+
+    # —— JSP/Web 编程 ——
+    if JSP_XLSX.exists():
+        jsp_qs = parse_xlsx(JSP_XLSX)
+        subjects["jsp"] = {"name": "JSP/Web程序设计", "questions": jsp_qs}
+        print(f"[OK] JSP/Web {len(jsp_qs)} 题")
 
     if not subjects:
         print("[ERROR] 未找到任何题库数据", file=sys.stderr)
