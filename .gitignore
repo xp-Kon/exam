@@ -8,3 +8,5 @@ parse-questions.js
 ponytail-tmp/
 
 .vercel
+logs/
+package-lock.json
