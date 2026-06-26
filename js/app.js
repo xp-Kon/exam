@@ -34,6 +34,24 @@ function getQuestionsByType(type) {
   if(type==='single') return QUESTION_BANK.filter(q=>q.type==='single'&&!isTF(q));
   return QUESTION_BANK.filter(q=>q.type===type);
 }
+const TYPE_MAP={single:{l:'单选题',i:'fa-check-circle'},multiple:{l:'多选题',i:'fa-check-double'},fill:{l:'填空题',i:'fa-pen'},tf:{l:'判断题',i:'fa-balance-scale'}};
+function bindPracticeHandlers(areaId,fbId,label,afterReveal) {
+  let selected='';
+  window.__optClick=(el,opt)=>{
+    const sq=state.shuffledQ;
+    if(sq.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
+    else{selected=opt;revealAnswer(areaId,fbId,sq,opt,label);if(afterReveal)afterReveal();}
+  };
+  window.__submitMulti=()=>{
+    const sq=state.shuffledQ;
+    const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
+    if(!chosen)return;
+    revealAnswer(areaId,fbId,sq,chosen,label);if(afterReveal)afterReveal();
+  };
+  window.__submitFill=()=>{
+    handleFillSubmit(areaId,fbId,state.shuffledQ,label);if(afterReveal)afterReveal();
+  };
+}
 function showModal(title,body,onConfirm) {
   $('modalTitle').textContent=title; $('modalBody').textContent=body;
   $('confirmModal').classList.remove('hidden');
@@ -66,7 +84,7 @@ function handleRoute() {
   currentRoute=name;
   document.querySelectorAll('.nav-item').forEach(e=>e.classList.toggle('active',e.dataset.route===name));
   window.__optClick=null;window.__submitFill=null;window.__submitMulti=null;
-  ({dashboard:renderDashboard,browse:renderBrowse,practice:renderPractice,random:renderRandom,exam:renderExam,errors:renderErrors,favorites:renderFavorites,single:renderTypePractice,multiple:renderTypePractice,fill:renderTypePractice,tf:renderTypePractice}[name]||renderDashboard)();
+  ({dashboard:renderDashboard,browse:renderBrowse,practice:renderPractice,random:renderRandom,exam:renderExam,errors:renderErrors,favorites:renderFavorites,...Object.fromEntries(Object.keys(TYPE_MAP).map(k=>[k,renderTypePractice]))}[name]||renderDashboard)();
   const s=Store.getStats();
   $('progressDisplay').innerHTML=`<i class="fas fa-chart-line"></i> ${s.totalQuestions?Math.round(s.totalDone/s.totalQuestions*100):0}% (${s.totalDone}/${s.totalQuestions})`;
 }
@@ -80,7 +98,7 @@ function navQuestion(dir) {
   } else if (currentRoute==='random') {
     state.randomIdx=Math.max(0,state.randomIdx+dir);
     showRandomQuestion();
-  } else if (['single','multiple','fill','tf'].includes(currentRoute)) {
+  } else if (currentRoute in TYPE_MAP) {
     state.typeIdx=Math.max(0,Math.min(state.typeIds.length-1,state.typeIdx+dir));
     renderTypePractice();
   }
@@ -378,23 +396,7 @@ function renderPractice() {
     <div id="practiceFeedback" style="margin-top:12px"></div>
   </div>`;
 
-  let selected='';
-  window.__optClick=(el,opt)=>{
-    const sq=state.shuffledQ;
-    if(sq.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
-    else{selected=opt;revealAnswer('practiceArea','practiceFeedback',sq,opt,`第 ${sq.id} 题`);Store.setPracticePos(state.practiceId);}
-  };
-  window.__submitMulti=()=>{
-    const sq=state.shuffledQ;
-    const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
-    if(!chosen)return;
-    revealAnswer('practiceArea','practiceFeedback',sq,chosen,`第 ${sq.id} 题`);Store.setPracticePos(state.practiceId);
-  };
-  window.__submitFill=()=>{
-    const sq=state.shuffledQ;
-    handleFillSubmit('practiceArea','practiceFeedback',sq,`第 ${sq.id} 题`);
-    Store.setPracticePos(state.practiceId);
-  };
+  bindPracticeHandlers('practiceArea','practiceFeedback',`第 ${q.id} 题`,()=>Store.setPracticePos(state.practiceId));
 }
 
 // ========== PAGE: RANDOM ==========
@@ -424,52 +426,31 @@ function showRandomQuestion() {
     <div id="randFeedback" style="margin-top:12px"></div>
   </div>`;
 
-  let selected='';
-  const curIdx=state.randomIdx;
-  window.__optClick=(el,opt)=>{
-    const sq=state.shuffledQ;
-    if(sq.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
-    else{selected=opt;revealAnswer('randArea','randFeedback',sq,opt,`随机 #${curIdx+1}`);}
-  };
-  window.__submitMulti=()=>{
-    const sq=state.shuffledQ;
-    const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
-    if(!chosen)return;
-    revealAnswer('randArea','randFeedback',sq,chosen,`随机 #${curIdx+1}`);
-  };
-  window.__submitFill=()=>{
-    const sq=state.shuffledQ;
-    handleFillSubmit('randArea','randFeedback',sq,`随机 #${curIdx+1}`);
-  };
+  bindPracticeHandlers('randArea','randFeedback',`随机 #${state.randomIdx+1}`);
 }
 
 // ========== PAGE: TYPE PRACTICE (single/multiple/fill/tf) ==========
-const TYPE_LABELS={single:'单选题',multiple:'多选题',fill:'填空题',tf:'判断题'};
-const TYPE_ICONS={single:'fa-check-circle',multiple:'fa-check-double',fill:'fa-pen',tf:'fa-balance-scale'};
 function renderTypePractice() {
-  const type=currentRoute;
-  // 首次进入或题型切换时，筛选并 shuffle
+  const type=currentRoute,tm=TYPE_MAP[type];
   if(!state.typeIds.length||state.typeKey!==type){
-    const qs=getQuestionsByType(type);
-    state.typeIds=shuffle(qs.map(q=>q.id));
-    state.typeIdx=0;
-    state.typeKey=type;
+    state.typeIds=shuffle(getQuestionsByType(type).map(q=>q.id));
+    state.typeIdx=0;state.typeKey=type;
   }
   if(!state.typeIds.length){
-    main.innerHTML=`<div class="fade-in" style="text-align:center;padding:60px 20px"><i class="fas ${TYPE_ICONS[type]}" style="font-size:3rem;color:var(--text-secondary)"></i><h2 style="margin:16px 0">${TYPE_LABELS[type]}</h2><p style="color:var(--text-secondary)">当前科目没有${TYPE_LABELS[type]}</p><button class="btn btn-secondary" onclick="navigate('dashboard')"><i class="fas fa-arrow-left"></i> 返回看板</button></div>`;
+    main.innerHTML=`<div class="fade-in" style="text-align:center;padding:60px 20px"><i class="fas ${tm.i}" style="font-size:3rem;color:var(--text-secondary)"></i><h2 style="margin:16px 0">${tm.l}</h2><p style="color:var(--text-secondary)">当前科目没有${tm.l}</p><button class="btn btn-secondary" onclick="navigate('dashboard')"><i class="fas fa-arrow-left"></i> 返回看板</button></div>`;
     return;
   }
   if(state.typeIdx>=state.typeIds.length){
-    main.innerHTML=`<div class="fade-in" style="text-align:center;padding:60px 20px"><i class="fas fa-trophy" style="font-size:3rem;color:var(--gold)"></i><h2 style="margin:16px 0">本轮完成！</h2><p style="color:var(--text-secondary)">共练习 ${state.typeIds.length} 道${TYPE_LABELS[type]}</p><button class="btn btn-primary" style="margin-top:20px" onclick="state.typeIds=shuffle(getQuestionsByType('${type}').map(q=>q.id));state.typeIdx=0;renderTypePractice()"><i class="fas fa-redo"></i> 再来一轮</button><button class="btn btn-secondary" style="margin-top:20px;margin-left:8px" onclick="navigate('dashboard')"><i class="fas fa-arrow-left"></i> 返回看板</button></div>`;
+    main.innerHTML=`<div class="fade-in" style="text-align:center;padding:60px 20px"><i class="fas fa-trophy" style="font-size:3rem;color:var(--gold)"></i><h2 style="margin:16px 0">本轮完成！</h2><p style="color:var(--text-secondary)">共练习 ${state.typeIds.length} 道${tm.l}</p><button class="btn btn-primary" style="margin-top:20px" onclick="state.typeIds=shuffle(getQuestionsByType('${type}').map(q=>q.id));state.typeIdx=0;renderTypePractice()"><i class="fas fa-redo"></i> 再来一轮</button><button class="btn btn-secondary" style="margin-top:20px;margin-left:8px" onclick="navigate('dashboard')"><i class="fas fa-arrow-left"></i> 返回看板</button></div>`;
     return;
   }
   const raw=QUESTION_BANK.find(x=>x.id===state.typeIds[state.typeIdx]);
   if(!raw){state.typeIdx++;renderTypePractice();return;}
   const q=state.shuffledQ=shuffleQuestion(raw);
-  const total=state.typeIds.length,idx=state.typeIdx;
+  const total=state.typeIds.length,idx=state.typeIdx,label=`${tm.l} #${idx+1}`;
 
   main.innerHTML=`<div class="fade-in">
-    <div class="page-header"><h2 class="page-title"><i class="fas ${TYPE_ICONS[type]}"></i>${TYPE_LABELS[type]}</h2>
+    <div class="page-header"><h2 class="page-title"><i class="fas ${tm.i}"></i>${tm.l}</h2>
       <div class="page-actions">
         <span style="color:var(--text-secondary);font-size:.85rem;padding:6px 0">${idx+1} / ${total}</span>
         <button class="btn btn-secondary btn-sm" onclick="navQuestion(-1)" ${idx<=0?'disabled':''}><i class="fas fa-chevron-left"></i></button>
@@ -478,26 +459,10 @@ function renderTypePractice() {
     <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:${Math.round((idx+1)/total*100)}%"></div></div>
     <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-secondary);margin-bottom:16px">
       <span>第 ${idx+1} / ${total} 题</span><span>${Math.round((idx+1)/total*100)}%</span></div>
-    <div id="typeArea">${renderQuestion(q,{interactive:true,index:`${TYPE_LABELS[type]} #${idx+1}`})}</div>
+    <div id="typeArea">${renderQuestion(q,{interactive:true,index:label})}</div>
     <div id="typeFeedback" style="margin-top:12px"></div>
   </div>`;
-
-  let selected='';
-  window.__optClick=(el,opt)=>{
-    const sq=state.shuffledQ;
-    if(sq.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
-    else{selected=opt;revealAnswer('typeArea','typeFeedback',sq,opt,`${TYPE_LABELS[type]} #${idx+1}`);}
-  };
-  window.__submitMulti=()=>{
-    const sq=state.shuffledQ;
-    const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
-    if(!chosen)return;
-    revealAnswer('typeArea','typeFeedback',sq,chosen,`${TYPE_LABELS[type]} #${idx+1}`);
-  };
-  window.__submitFill=()=>{
-    const sq=state.shuffledQ;
-    handleFillSubmit('typeArea','typeFeedback',sq,`${TYPE_LABELS[type]} #${idx+1}`);
-  };
+  bindPracticeHandlers('typeArea','typeFeedback',label);
 }
 
 // ========== PAGE: EXAM ==========
