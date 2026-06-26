@@ -220,7 +220,7 @@ document.addEventListener('keydown',e=>{
     return;
   }
   if(e.target.tagName==='INPUT'&&e.target.id!=='browseSearch')return;
-  if(!['practice','random','exam'].includes(currentRoute))return;
+  if(!['practice','random','exam'].concat(Object.keys(TYPE_MAP)).includes(currentRoute))return;
   const k=e.key.toUpperCase();
   if(['A','B','C','D'].includes(k)){
     const opts=main.querySelectorAll('.q-option.selectable');
@@ -236,11 +236,11 @@ document.addEventListener('keydown',e=>{
 (function(){
   let startX=0,startY=0,moved=false;
   main.addEventListener('touchstart',e=>{
-    if(!['practice','random'].includes(currentRoute))return;
+    if(!['practice','random'].concat(Object.keys(TYPE_MAP)).includes(currentRoute))return;
     const t=e.touches[0];startX=t.clientX;startY=t.clientY;moved=false;
   },{passive:true});
   main.addEventListener('touchmove',e=>{
-    if(!['practice','random'].includes(currentRoute))return;
+    if(!['practice','random'].concat(Object.keys(TYPE_MAP)).includes(currentRoute))return;
     const t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;
     if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>10)moved=true;
   },{passive:true});
