@@ -6,6 +6,7 @@ const state = {
   randomIds: [], randomIdx: 0,
   examQuestions: [], examAnswers: {}, examTimer: null, examTimeLeft: 0, examEnded: false,
   currentFilter: '',
+  shuffledQ: null,
 };
 const $ = id => document.getElementById(id), main = $('mainContent');
 const LABELS = ['A','B','C','D'];
@@ -18,6 +19,13 @@ function shuffle(a) { const r=[...a]; for(let i=r.length-1;i>0;i--){const j=Math
 function qLabel(q) { return q.type==='fill'?'填空题':q.type==='single'?'单选题':'多选题'; }
 function answerText(q) { return q.answer.join(''); }
 function isCorrect(q,chosen) { const c=[...chosen].sort(),a=[...q.answer].sort(); return c.length===a.length&&c.every((v,i)=>v===a[i]); }
+function shuffleQuestion(q) {
+  if(!q.options) return q;
+  const entries=shuffle(Object.entries(q.options));
+  const map={};entries.forEach(([_,v],i)=>{map[LABELS[i]]=v;});
+  const ansMap={};entries.forEach(([origKey,_],i)=>{ansMap[origKey]=LABELS[i];});
+  return {...q,options:map,answer:q.answer.map(k=>ansMap[k])};
+}
 function showModal(title,body,onConfirm) {
   $('modalTitle').textContent=title; $('modalBody').textContent=body;
   $('confirmModal').classList.remove('hidden');
@@ -342,8 +350,9 @@ function renderBrowse() {
 
 // ========== PAGE: PRACTICE ==========
 function renderPractice() {
-  const q=QUESTION_BANK[state.practiceId-1];
-  if(!q){state.practiceId=1;renderPractice();return;}
+  const raw=QUESTION_BANK[state.practiceId-1];
+  if(!raw){state.practiceId=1;renderPractice();return;}
+  const q=state.shuffledQ=shuffleQuestion(raw);
   const pct=Math.round(state.practiceId/QUESTION_BANK.length*100);
 
   main.innerHTML=`<div class="fade-in">
@@ -361,19 +370,19 @@ function renderPractice() {
 
   let selected='';
   window.__optClick=(el,opt)=>{
-    const q=QUESTION_BANK[state.practiceId-1];
-    if(q.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
-    else{selected=opt;revealAnswer('practiceArea','practiceFeedback',q,opt,`第 ${q.id} 题`);Store.setPracticePos(state.practiceId);}
+    const sq=state.shuffledQ;
+    if(sq.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
+    else{selected=opt;revealAnswer('practiceArea','practiceFeedback',sq,opt,`第 ${sq.id} 题`);Store.setPracticePos(state.practiceId);}
   };
   window.__submitMulti=()=>{
-    const q=QUESTION_BANK[state.practiceId-1];
+    const sq=state.shuffledQ;
     const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
     if(!chosen)return;
-    revealAnswer('practiceArea','practiceFeedback',q,chosen,`第 ${q.id} 题`);Store.setPracticePos(state.practiceId);
+    revealAnswer('practiceArea','practiceFeedback',sq,chosen,`第 ${sq.id} 题`);Store.setPracticePos(state.practiceId);
   };
   window.__submitFill=()=>{
-    const q=QUESTION_BANK[state.practiceId-1];
-    handleFillSubmit('practiceArea','practiceFeedback',q,`第 ${q.id} 题`);
+    const sq=state.shuffledQ;
+    handleFillSubmit('practiceArea','practiceFeedback',sq,`第 ${sq.id} 题`);
     Store.setPracticePos(state.practiceId);
   };
 }
@@ -390,8 +399,9 @@ function showRandomQuestion() {
       <button class="btn btn-primary" style="margin-top:20px" onclick="state.randomIds=shuffle(QUESTION_BANK.map(q=>q.id));state.randomIdx=0;showRandomQuestion()"><i class="fas fa-redo"></i> 再来一轮</button></div>`;
     return;
   }
-  const q=QUESTION_BANK.find(x=>x.id===state.randomIds[state.randomIdx]);
-  if(!q){state.randomIdx++;showRandomQuestion();return;}
+  const raw=QUESTION_BANK.find(x=>x.id===state.randomIds[state.randomIdx]);
+  if(!raw){state.randomIdx++;showRandomQuestion();return;}
+  const q=state.shuffledQ=shuffleQuestion(raw);
 
   main.innerHTML=`<div class="fade-in">
     <div class="page-header"><h2 class="page-title"><i class="fas fa-random"></i>随机练习</h2>
@@ -407,19 +417,19 @@ function showRandomQuestion() {
   let selected='';
   const curIdx=state.randomIdx;
   window.__optClick=(el,opt)=>{
-    const q=QUESTION_BANK.find(x=>x.id===state.randomIds[Math.min(curIdx,state.randomIds.length-1)]);
-    if(q.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
-    else{selected=opt;revealAnswer('randArea','randFeedback',q,opt,`随机 #${curIdx+1}`);}
+    const sq=state.shuffledQ;
+    if(sq.type==='multiple'){el.classList.toggle('selected');selected=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
+    else{selected=opt;revealAnswer('randArea','randFeedback',sq,opt,`随机 #${curIdx+1}`);}
   };
   window.__submitMulti=()=>{
-    const q=QUESTION_BANK.find(x=>x.id===state.randomIds[Math.min(curIdx,state.randomIds.length-1)]);
+    const sq=state.shuffledQ;
     const chosen=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');
     if(!chosen)return;
-    revealAnswer('randArea','randFeedback',q,chosen,`随机 #${curIdx+1}`);
+    revealAnswer('randArea','randFeedback',sq,chosen,`随机 #${curIdx+1}`);
   };
   window.__submitFill=()=>{
-    const q=QUESTION_BANK.find(x=>x.id===state.randomIds[Math.min(curIdx,state.randomIds.length-1)]);
-    handleFillSubmit('randArea','randFeedback',q,`随机 #${curIdx+1}`);
+    const sq=state.shuffledQ;
+    handleFillSubmit('randArea','randFeedback',sq,`随机 #${curIdx+1}`);
   };
 }
 
@@ -439,7 +449,7 @@ function renderExam() {
 }
 
 function startExam(count,timeLimit) {
-  state.examQuestions=shuffle(QUESTION_BANK).slice(0,count);
+  state.examQuestions=shuffle(QUESTION_BANK).slice(0,count).map(q=>shuffleQuestion(q));
   state.examAnswers={};state.examEnded=false;state.examTimeLeft=timeLimit;
   showExamQuestion(0);
 }
@@ -475,15 +485,15 @@ function showExamQuestion(idx) {
   </div>`;
 
   window.__optClick=(el,opt)=>{
-    const qqq=state.examQuestions.find((_,i)=>i===idx);
-    if(qqq.type==='multiple'){el.classList.toggle('selected');state.examAnswers[idx]=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
+    const sq=state.examQuestions[idx];
+    if(sq.type==='multiple'){el.classList.toggle('selected');state.examAnswers[idx]=[...document.querySelectorAll('.q-option.selected')].map(e=>e.textContent.trim()[0]).join('');}
     else state.examAnswers[idx]=opt;
     const a=Object.keys(state.examAnswers).length,tt=state.examQuestions.length;
     const hs=main.querySelector('.page-header span:last-child');if(hs)hs.textContent=`${a}/${tt} 已答`;
   };
   window.__submitMulti=()=>{}; // 考试模式无需提交按钮（已有交卷按钮）
   window.__submitFill=()=>{
-    const q=state.examQuestions[idx];
+    const sq=state.examQuestions[idx];
     const inputs=document.querySelectorAll('#examArea .fill-input');
     state.examAnswers[idx]=[...inputs].map(inp=>inp.value.trim());
     // 更新已答计数
