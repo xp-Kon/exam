@@ -7002,6 +7002,7 @@ const SUBJECTS = {
         {
             "id": 142,
             "question": "使用<jsp:setProperty>标记时，如果将property属性设置为“____”，表示将表单中的所有参数自动匹配Bean的同名属性。",
+            "options": null,
             "answer": ["*"],
             "type": "fill",
             "source": ""
@@ -7009,6 +7010,7 @@ const SUBJECTS = {
         {
             "id": 143,
             "question": "在JSP页面中，使用<jsp:useBean id=\"user\" class=\"com.bean.User\" scope=\"session\"/>后，可以通过<jsp:getProperty name=\"____\" property=\"username\"/>获取用户名。",
+            "options": null,
             "answer": ["user"],
             "type": "fill",
             "source": ""
@@ -7016,6 +7018,7 @@ const SUBJECTS = {
         {
             "id": 144,
             "question": "<jsp:setProperty>标记中，用于指定Bean名称的属性是____，用于指定要设置的属性名的属性是____。",
+            "options": null,
             "answer": ["name", "property"],
             "type": "fill",
             "source": ""
@@ -7023,6 +7026,7 @@ const SUBJECTS = {
         {
             "id": 145,
             "question": "在JSP页面中，若要获取Bean的price属性，应使用<jsp:getProperty name=\"product\" property=\"____\" />。",
+            "options": null,
             "answer": ["price"],
             "type": "fill",
             "source": ""
@@ -7030,6 +7034,7 @@ const SUBJECTS = {
         {
             "id": 146,
             "question": "在JSP页面中，使用JavaBean之前通常先用<jsp:useBean>动作标记创建或查找一个Bean，该动作标记的____属性用于指定Bean的唯一标识名。",
+            "options": null,
             "answer": ["id"],
             "type": "fill",
             "source": ""
@@ -7037,6 +7042,7 @@ const SUBJECTS = {
         {
             "id": 147,
             "question": "在JSP中使用JavaBean时，<jsp:useBean>标记的scope属性默认值为____。",
+            "options": null,
             "answer": ["page"],
             "type": "fill",
             "source": ""
@@ -7044,6 +7050,7 @@ const SUBJECTS = {
         {
             "id": 148,
             "question": "使用注解的过滤器，当拦截路径相同时，按过滤器类名的____1____顺序执行。",
+            "options": null,
             "answer": ["字典"],
             "type": "fill",
             "source": ""
@@ -7051,6 +7058,7 @@ const SUBJECTS = {
         {
             "id": 149,
             "question": "编写过滤器类需要实现jakarta.servlet包中的____1____接口。",
+            "options": null,
             "answer": ["Filter"],
             "type": "fill",
             "source": ""
@@ -7058,6 +7066,7 @@ const SUBJECTS = {
         {
             "id": 150,
             "question": "统计在线用户通常需要监听____1____对象的创建和销毁事件。",
+            "options": null,
             "answer": ["HttpSession"],
             "type": "fill",
             "source": ""
@@ -7065,6 +7074,7 @@ const SUBJECTS = {
         {
             "id": 151,
             "question": "Filter接口的核心方法包括init()、destroy()和____1____方法。",
+            "options": null,
             "answer": ["doFilter"],
             "type": "fill",
             "source": ""
@@ -7072,6 +7082,7 @@ const SUBJECTS = {
         {
             "id": 152,
             "question": "Servlet3.0开始支持使用____1____注解部署过滤器，无需web.xml配置。",
+            "options": null,
             "answer": ["@WebFilter"],
             "type": "fill",
             "source": ""
@@ -7079,6 +7090,7 @@ const SUBJECTS = {
         {
             "id": 153,
             "question": "Filter接口的init()方法在____1____时调用一次。",
+            "options": null,
             "answer": ["服务器启动"],
             "type": "fill",
             "source": ""
@@ -7086,6 +7098,7 @@ const SUBJECTS = {
         {
             "id": 154,
             "question": "Filter接口的doFilter()方法在____1____时调用。",
+            "options": null,
             "answer": ["每次请求"],
             "type": "fill",
             "source": ""
@@ -7093,6 +7106,7 @@ const SUBJECTS = {
         {
             "id": 155,
             "question": "使用@WebFilter注解时，可通过____1____注解为过滤器添加初始化参数。",
+            "options": null,
             "answer": ["@WebInitParam"],
             "type": "fill",
             "source": ""
@@ -7100,6 +7114,7 @@ const SUBJECTS = {
         {
             "id": 156,
             "question": "在doFilter()方法中，调用____1____方法会执行下一个过滤器或请求目标程序。",
+            "options": null,
             "answer": ["chain.doFilter(req, resp)"],
             "type": "fill",
             "source": ""
@@ -7107,6 +7122,7 @@ const SUBJECTS = {
         {
             "id": 157,
             "question": "字符编码过滤器的核心功能是通过request对象调用____1____方法设置统一字符编码。",
+            "options": null,
             "answer": ["setCharacterEncoding(String code)"],
             "type": "fill",
             "source": ""
@@ -7114,6 +7130,7 @@ const SUBJECTS = {
         {
             "id": 158,
             "question": "Spring MVC中，______注解用于标识一个类为控制器。",
+            "options": null,
             "answer": ["@Controller"],
             "type": "fill",
             "source": ""
@@ -7121,6 +7138,7 @@ const SUBJECTS = {
         {
             "id": 159,
             "question": "MyBatis-Plus的通用CRUD接口中，______方法用于根据主键查询单条记录。",
+            "options": null,
             "answer": ["getById"],
             "type": "fill",
             "source": ""
@@ -7128,6 +7146,7 @@ const SUBJECTS = {
         {
             "id": 160,
             "question": "Spring Boot默认加载classpath下的______或application.yml作为配置文件。",
+            "options": null,
             "answer": ["application.properties"],
             "type": "fill",
             "source": ""
@@ -7135,6 +7154,7 @@ const SUBJECTS = {
         {
             "id": 161,
             "question": "MyBatis中，______标签用于实现循环遍历集合参数，常用于IN条件查询。",
+            "options": null,
             "answer": ["<foreach>"],
             "type": "fill",
             "source": ""
@@ -7142,6 +7162,7 @@ const SUBJECTS = {
         {
             "id": 162,
             "question": "Spring Boot内置的默认Web服务器是______。",
+            "options": null,
             "answer": ["Tomcat"],
             "type": "fill",
             "source": ""
@@ -7149,6 +7170,7 @@ const SUBJECTS = {
         {
             "id": 163,
             "question": "MyBatis核心工作流程包括读取配置、创建SqlSessionFactory、创建SqlSession、获取Mapper代理对象、执行SQL语句、结果集映射与处理以及______。",
+            "options": null,
             "answer": ["关闭SqlSession资源"],
             "type": "fill",
             "source": ""
@@ -7156,6 +7178,7 @@ const SUBJECTS = {
         {
             "id": 164,
             "question": "Spring Boot应用的启动类需要添加______注解，以启用自动配置和组件扫描。",
+            "options": null,
             "answer": ["@SpringBootApplication"],
             "type": "fill",
             "source": ""
@@ -7163,6 +7186,7 @@ const SUBJECTS = {
         {
             "id": 165,
             "question": "JSP 页面中声明成员变量和方法使用标记 ______。",
+            "options": null,
             "answer": ["<%! %>"],
             "type": "fill",
             "source": ""
@@ -7170,6 +7194,7 @@ const SUBJECTS = {
         {
             "id": 166,
             "question": "获取表单中多个同名复选框的值，应使用 request.______() 方法。",
+            "options": null,
             "answer": ["getParameterValues"],
             "type": "fill",
             "source": ""
@@ -7177,6 +7202,7 @@ const SUBJECTS = {
         {
             "id": 167,
             "question": "每个用户独立的会话对象是 ______。",
+            "options": null,
             "answer": ["session"],
             "type": "fill",
             "source": ""
@@ -7184,6 +7210,7 @@ const SUBJECTS = {
         {
             "id": 168,
             "question": "pageContext 对象的生命周期是 ______ 域。",
+            "options": null,
             "answer": ["page"],
             "type": "fill",
             "source": ""
@@ -7191,6 +7218,7 @@ const SUBJECTS = {
         {
             "id": 169,
             "question": "JSP Model2架构模型对应MVC设计模式，其中______充当控制器，负责接收请求并分发；______作为视图，负责页面显示；______作为模型，封装数据和业务逻辑。该模型采用______+______+JavaBean的技术组合。",
+            "options": null,
             "answer": ["Servlet", "jsp页面", "JavaBean", "JSP", "Servlet"],
             "type": "fill",
             "source": ""
@@ -7198,6 +7226,7 @@ const SUBJECTS = {
         {
             "id": 170,
             "question": "在JSP网页开发初级阶段，将Java代码嵌入网页处理业务逻辑会导致维护困难。JavaBean是遵循特定写法的Java类，用于封装业务逻辑，实现与HTML代码的分离，其核心特点包括：1) 必须具有______构造函数；2) 属性必须______；3) 通过______类型的方法暴露属性；4) 需要放在______内。",
+            "options": null,
             "answer": ["无参的", "私有化", "public", "包"],
             "type": "fill",
             "source": ""
@@ -7205,6 +7234,7 @@ const SUBJECTS = {
         {
             "id": 171,
             "question": "JSP Model1采用______+______的技术组合，将页面显示与业务逻辑分离。其中，______负责流程控制和页面显示，______封装数据和业务逻辑。但该模型在大型项目中存在______的问题。",
+            "options": null,
             "answer": ["JSP", "JavaBean", "JSP页面", "JavaBean对象", "流程控制与页面显示未完全分离"],
             "type": "fill",
             "source": ""
@@ -7212,6 +7242,7 @@ const SUBJECTS = {
         {
             "id": 172,
             "question": "过滤器位于______与______之间，可过滤请求和响应。编写过滤器需实现______接口，核心方法包括______（初始化）、______（执行过滤）和destroy()（销毁）。过滤器通过______对象将请求传递给下一个资源。",
+            "options": null,
             "answer": ["浏览器", "Web服务器", "jakarta.servlet.Filter", "init()", "doFilter()", "FilterChain"],
             "type": "fill",
             "source": ""
@@ -7219,6 +7250,7 @@ const SUBJECTS = {
         {
             "id": 173,
             "question": "JSP有9个内置对象，其中______对象用于输出内容到页面；______对象用于获取请求参数；______对象用于存储会话级数据；______对象代表整个Web应用的上下文；______对象用于处理异常信息。",
+            "options": null,
             "answer": ["out", "request", "session", "application", "exception"],
             "type": "fill",
             "source": ""
@@ -7226,6 +7258,7 @@ const SUBJECTS = {
         {
             "id": 174,
             "question": "Servlet是运行在服务器端的Java程序，用于处理______请求并生成响应。编写Servlet需继承______类，重写______和______方法处理GET和POST请求。Servlet的生命周期包括______、服务和销毁三个阶段。",
+            "options": null,
             "answer": ["HTTP", "jakarta.servlet.http.HttpServlet", "doGet()", "doPost()", "初始化"],
             "type": "fill",
             "source": ""
@@ -7233,6 +7266,7 @@ const SUBJECTS = {
         {
             "id": 175,
             "question": "Session对象代表客户端与服务器的一次会话，其类型为______接口。Web服务器为每个Session分配唯一的______用于区分用户。Session对象通过______方法保存数据，通过______方法获取数据，会话结束的条件包括______或会话超时。",
+            "options": null,
             "answer": ["jakarta.servlet.http.HttpSession", "session ID", "setAttribute", "getAttribute", "关闭浏览器"],
             "type": "fill",
             "source": ""
@@ -7240,6 +7274,7 @@ const SUBJECTS = {
         {
             "id": 176,
             "question": "EL提供了多个隐含对象，用于方便地访问不同范围的数据。例如，___________隐含对象用于访问pageContext范围的属性，___________用于访问request范围的属性，___________用于访问session范围的属性，___________用于访问application范围的属性。此外，___________隐含对象用于访问单个请求参数，___________用于访问多个请求参数的值。",
+            "options": null,
             "answer": ["pageScope", "requestScope", "sessionScope", "applicationScope", "param", "paramValues"],
             "type": "fill",
             "source": ""
@@ -7247,6 +7282,7 @@ const SUBJECTS = {
         {
             "id": 177,
             "question": "要在JSP页面中使用JSTL标签库，需要先在项目中引入JSTL的相关jar包（如___________和___________），然后在JSP页面的开头使用taglib指令引入相应的标签库。例如，引入核心标签库的taglib指令是___________ 。",
+            "options": null,
             "answer": ["jstl.jar", "standard.jar", "<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\" %>"],
             "type": "fill",
             "source": ""
@@ -7254,6 +7290,7 @@ const SUBJECTS = {
         {
             "id": 178,
             "question": "JSTL的核心标签库主要用于流程控制，包括条件判断、循环和分支等。例如，___________标签用于条件判断，___________ 标签用于循环遍历集合或数组，___________、___________和___________标签用于多分支判断。使用JSTL标签库需要在JSP页面的开头引入标签库声明，核心标签库的URI是___________，前缀通常为___________。",
+            "options": null,
             "answer": ["<c:if>", "<c:forEach>", "<c:choose>", "<c:when>", "<c:otherwise>", "http://java.sun.com/jsp/jstl/core", "c"],
             "type": "fill",
             "source": ""
@@ -7261,11 +7298,12 @@ const SUBJECTS = {
         {
             "id": 179,
             "question": "EL表达式的基本语法格式是___________，它的作用类似于JSP中的___________语法，用于快速从域对象或请求参数中取值并输出，支持简单运算。例如，要输出名为user的JavaBean对象的username属性值，EL表达式可以写为___________。",
+            "options": null,
             "answer": ["${表达式}", "<%=表达式%>", "${user.username}"],
             "type": "fill",
             "source": ""
-        },
-        ]
+        }
+    ]
   },
 };
 
