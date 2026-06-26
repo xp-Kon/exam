@@ -32,6 +32,9 @@ window.__switchSubject = (key) => {
   state.practiceId = Store.getPracticePos();
   state.randomIds = [];
   state.currentFilter = '';
+  // ponytail: 清除考试状态防科目混存
+  if(state.examTimer){clearInterval(state.examTimer);state.examTimer=null;}
+  state.examQuestions=[];state.examAnswers={};state.examEnded=false;
   handleRoute();
   // 更新侧栏题数和 select 状态
   const sel = $('subjectSelect');
@@ -45,7 +48,7 @@ function handleRoute() {
   const name=(location.hash.slice(1)||'dashboard').split('?')[0];
   currentRoute=name;
   document.querySelectorAll('.nav-item').forEach(e=>e.classList.toggle('active',e.dataset.route===name));
-  window.__optClick=null;
+  window.__optClick=null;window.__submitFill=null;window.__submitMulti=null;
   ({dashboard:renderDashboard,browse:renderBrowse,practice:renderPractice,random:renderRandom,exam:renderExam,errors:renderErrors,favorites:renderFavorites}[name]||renderDashboard)();
   const s=Store.getStats();
   $('progressDisplay').innerHTML=`<i class="fas fa-chart-line"></i> ${s.totalQuestions?Math.round(s.totalDone/s.totalQuestions*100):0}% (${s.totalDone}/${s.totalQuestions})`;
@@ -98,9 +101,10 @@ function renderQuestion(q,opts={}) {
     // 显示答案时填入正确值
     if(showAnswer){
       setTimeout(()=>{
-        document.querySelectorAll('.fill-input').forEach((inp,i)=>{
+        // ponytail: 按 data-id 限定范围，防多题场景互相覆盖
+        document.querySelectorAll(`[data-id="${q.id}"] .fill-input`).forEach((inp,i)=>{
           if(chosen&&chosen[i])inp.value=chosen[i];
-          inp.classList.add(isCorrect(q,chosen)?'correct':'wrong');
+          inp.classList.add(chosen&&isCorrect(q,chosen)?'correct':'wrong');
         });
       },0);
     }
@@ -129,8 +133,8 @@ function renderQuestion(q,opts={}) {
       <i class="fas ${chosen&&isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'}"></i>
       正确答案：${answerText(q)}${chosen?` | 你的选择：${chosen}`:''}</div>`:''
   );
-  const fillReveal=q.type==='fill'&&showAnswer?`<div class="q-answer-reveal ${chosen&&isCorrect(q,chosen)?'correct':'wrong'}">
-      <i class="fas ${chosen&&isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'}"></i>
+  const fillReveal=q.type==='fill'&&showAnswer?`<div class="q-answer-reveal ${chosen?isCorrect(q,chosen)?'correct':'wrong':''}">
+      <i class="fas ${chosen?(isCorrect(q,chosen)?'fa-check-circle':'fa-times-circle'):''}"></i>
       正确答案：${q.answer.join('；')}</div>`:'';
   return `<div class="${cardClass}" data-id="${q.id}">
     <div class="q-header">
@@ -215,18 +219,23 @@ document.addEventListener('keydown',e=>{
 
 // ========== FILL-IN ANSWER SUBMIT ==========
 function handleFillSubmit(areaId, feedbackId, q, nextLabel) {
+  const area = $(areaId);
+  if (!area) return;
+  // ponytail: 防重复提交
+  if(area.dataset.fillDone)return;
+  area.dataset.fillDone='1';
   const inputs = document.querySelectorAll(`#${areaId} .fill-input`);
   const userAns = [...inputs].map(inp => inp.value.trim());
+  // ponytail: 标准化对比（排序 + 小写），与 isCorrect 一致
+  const norm = a => [...a.map(v=>v.toLowerCase())].sort();
   const ok = userAns.length === q.answer.length &&
-             userAns.every((v, i) => v.toLowerCase() === q.answer[i].toLowerCase());
+             norm(userAns).every((v,i) => v === norm(q.answer)[i]);
   ok ? Store.addCorrect(q.id) : Store.addError(q.id);
   // 高亮输入框
   inputs.forEach((inp, i) => {
     inp.classList.add(ok ? 'correct' : 'wrong');
     if (!ok && q.answer[i]) inp.setAttribute('title', `正确：${q.answer[i]}`);
   });
-  const area = $(areaId);
-  if (!area) return;
   // 追加答案揭示
   const revealHTML = `<div class="q-answer-reveal ${ok?'correct':'wrong'}">
     <i class="fas ${ok?'fa-check-circle':'fa-times-circle'}"></i>
@@ -457,7 +466,7 @@ function showExamQuestion(idx) {
         <span style="font-size:.9rem;color:var(--text-secondary)">${answered}/${total} 已答</span></div></div>
     <div class="exam-progress"><div class="info"><span>第 ${idx+1} 题</span><span>${idx+1}/${total}</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:${(idx+1)/total*100}%"></div></div></div>
-    <div id="examArea">${renderQuestion(q,{interactive:true,chosen,index:`第 ${idx+1} 题`,noSubmit:true})}</div>
+    <div id="examArea">${renderQuestion(q,{interactive:true,chosen,index:`第 ${idx+1} 题`,noSubmit:q.type!=='fill'})}</div>
     <div style="display:flex;justify-content:space-between;margin-top:16px">
       <button class="btn btn-secondary btn-sm" onclick="clearInterval(state.examTimer);showExamQuestion(${idx-1})" ${idx<=0?'disabled':''}><i class="fas fa-chevron-left"></i> 上一题</button>
       <button class="btn btn-secondary btn-sm" onclick="clearInterval(state.examTimer);showExamQuestion(${idx+1})">跳过 <i class="fas fa-forward"></i></button>
@@ -473,6 +482,17 @@ function showExamQuestion(idx) {
     const hs=main.querySelector('.page-header span:last-child');if(hs)hs.textContent=`${a}/${tt} 已答`;
   };
   window.__submitMulti=()=>{}; // 考试模式无需提交按钮（已有交卷按钮）
+  window.__submitFill=()=>{
+    const q=state.examQuestions[idx];
+    const inputs=document.querySelectorAll('#examArea .fill-input');
+    state.examAnswers[idx]=[...inputs].map(inp=>inp.value.trim());
+    // 更新已答计数
+    const a=Object.keys(state.examAnswers).length,tt=state.examQuestions.length;
+    const hs=main.querySelector('.page-header span:last-child');if(hs)hs.textContent=`${a}/${tt} 已答`;
+    // 自动跳下一题
+    clearInterval(state.examTimer);
+    showExamQuestion(idx+1);
+  };
 }
 
 function finishExam() {
