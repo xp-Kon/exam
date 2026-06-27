@@ -5874,7 +5874,12 @@ const SUBJECTS = {
         {
             "id": 1,
             "question": "可以在以下哪个标记之间插入变量与方法声明?( )。",
-            "options": {"A": "<% 和 %>", "B": "<% 和 />", "C": "<%! 和 %>", "D": "<% 和 !>"},
+            "options": {
+                "A": "<% 和 %>",
+                "B": "<% 和 />",
+                "C": "<%! 和 %>",
+                "D": "<% 和 !>"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5882,7 +5887,12 @@ const SUBJECTS = {
         {
             "id": 2,
             "question": "JSP的page编译指令的属性language的默认值是( )。",
-            "options": {"A": "JSP", "B": "C", "C": "Java", "D": "C++"},
+            "options": {
+                "A": "JSP",
+                "B": "C",
+                "C": "Java",
+                "D": "C++"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5890,7 +5900,12 @@ const SUBJECTS = {
         {
             "id": 3,
             "question": "可以在以下哪个标记之间插入Java程序片?( )。",
-            "options": {"A": "<% 和 %>", "B": "<% 和 />", "C": "</ 和 %>", "D": "<% 和 !>"},
+            "options": {
+                "A": "<% 和 %>",
+                "B": "<% 和 />",
+                "C": "</ 和 %>",
+                "D": "<% 和 !>"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -5898,7 +5913,12 @@ const SUBJECTS = {
         {
             "id": 4,
             "question": "下列哪一项不属于JSP动作指令标记? ( )。",
-            "options": {"A": "<jsp:param>", "B": "<jsp:forward>", "C": "<jsp:include>", "D": "<%@ include %>"},
+            "options": {
+                "A": "<jsp:param>",
+                "B": "<jsp:forward>",
+                "C": "<jsp:include>",
+                "D": "<%@ include %>"
+            },
             "answer": ["D"],
             "type": "single",
             "source": ""
@@ -5906,7 +5926,12 @@ const SUBJECTS = {
         {
             "id": 5,
             "question": "动作标记( )的作用是:从该标记出现处停止当前JSP页面的继续执行，从而转向执行动作标记中page属性值指定的JSP页面。",
-            "options": {"A": "<jsp:param>", "B": "<jsp:forward>", "C": "<jsp:include>", "D": "<jsp:useBean %>"},
+            "options": {
+                "A": "<jsp:param>",
+                "B": "<jsp:forward>",
+                "C": "<jsp:include>",
+                "D": "<jsp:useBean %>"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -5914,7 +5939,12 @@ const SUBJECTS = {
         {
             "id": 6,
             "question": "include指令用于在JSP页面静态插入一个文件，插入文件可以是JSP页面、HTML网页、文本文件或一段Java代码，但必须保证插入后形成的文件是( )。",
-            "options": {"A": "是一个完整的HTML文件", "B": "是一个完整的JSP文件", "C": "是一个完整的TXT文件", "D": "是一个完整的Java源文件"},
+            "options": {
+                "A": "是一个完整的HTML文件",
+                "B": "是一个完整的JSP文件",
+                "C": "是一个完整的TXT文件",
+                "D": "是一个完整的Java源文件"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -5922,7 +5952,12 @@ const SUBJECTS = {
         {
             "id": 7,
             "question": "在“<%=”和“%>”标记之间放置( )，可以直接输出其值。",
-            "options": {"A": "变量", "B": "Java表达式", "C": "字符串", "D": "数字"},
+            "options": {
+                "A": "变量",
+                "B": "Java表达式",
+                "C": "字符串",
+                "D": "数字"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -5930,7 +5965,12 @@ const SUBJECTS = {
         {
             "id": 8,
             "question": "下列变量声明在( )范围内有效。",
-            "options": {"A": "从定义开始处有效，客户之间不共享", "B": "在整个页面内有效，客户之间不共享", "C": "在整个页面内有效，被多个客户共享", "D": "从定义开始处有效，被多个客户共享"},
+            "options": {
+                "A": "从定义开始处有效，客户之间不共享",
+                "B": "在整个页面内有效，客户之间不共享",
+                "C": "在整个页面内有效，被多个客户共享",
+                "D": "从定义开始处有效，被多个客户共享"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5938,7 +5978,12 @@ const SUBJECTS = {
         {
             "id": 9,
             "question": "Tomcat安装目录中的webapps文件夹的作用是什么？",
-            "options": {"A": "存放启动与停止服务器相关的可执行文件", "B": "存放服务器相关的配置文件", "C": "存放发布的web项目", "D": "存放日志文件"},
+            "options": {
+                "A": "存放启动与停止服务器相关的可执行文件",
+                "B": "存放服务器相关的配置文件",
+                "C": "存放发布的web项目",
+                "D": "存放日志文件"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5946,7 +5991,12 @@ const SUBJECTS = {
         {
             "id": 10,
             "question": "关于JavaBean的编写规则，下列说法错误的是( )",
-            "options": {"A": "类必须提供无参数的构造方法", "B": "属性必须声明为public以便直接访问", "C": "方法名使用get或set作为前缀，后跟首字母大写的属性名", "D": "布尔类型的属性可以使用is代替get"},
+            "options": {
+                "A": "类必须提供无参数的构造方法",
+                "B": "属性必须声明为public以便直接访问",
+                "C": "方法名使用get或set作为前缀，后跟首字母大写的属性名",
+                "D": "布尔类型的属性可以使用is代替get"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -5954,7 +6004,12 @@ const SUBJECTS = {
         {
             "id": 11,
             "question": "在JSP中使用<jsp:useBean>动作标记时，用于指定Bean实例在哪个范围内有效的属性是( )",
-            "options": {"A": "id", "B": "class", "C": "scope", "D": "type"},
+            "options": {
+                "A": "id",
+                "B": "class",
+                "C": "scope",
+                "D": "type"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5962,7 +6017,12 @@ const SUBJECTS = {
         {
             "id": 12,
             "question": "关于<jsp:getProperty>标记，下列说法正确的是( )",
-            "options": {"A": "它可以直接输出任意Java表达式的值", "B": "它必须与<jsp:setProperty>配对使用", "C": "它用于获取Bean的某个属性值并输出", "D": "它用于设置Bean的某个属性值"},
+            "options": {
+                "A": "它可以直接输出任意Java表达式的值",
+                "B": "它必须与<jsp:setProperty>配对使用",
+                "C": "它用于获取Bean的某个属性值并输出",
+                "D": "它用于设置Bean的某个属性值"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5970,7 +6030,12 @@ const SUBJECTS = {
         {
             "id": 13,
             "question": "下列哪个JSP动作标记用于在页面中创建或查找一个JavaBean实例?( )",
-            "options": {"A": "<jsp:include>", "B": "<jsp:forward>", "C": "<jsp:useBean>", "D": "<jsp:param>"},
+            "options": {
+                "A": "<jsp:include>",
+                "B": "<jsp:forward>",
+                "C": "<jsp:useBean>",
+                "D": "<jsp:param>"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5978,7 +6043,12 @@ const SUBJECTS = {
         {
             "id": 14,
             "question": "以下哪个不是JSP动作标记?( )",
-            "options": {"A": "<jsp:useBean>", "B": "<jsp:setProperty>", "C": "<jsp:scriptlet>", "D": "<jsp:getProperty>"},
+            "options": {
+                "A": "<jsp:useBean>",
+                "B": "<jsp:setProperty>",
+                "C": "<jsp:scriptlet>",
+                "D": "<jsp:getProperty>"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -5986,7 +6056,12 @@ const SUBJECTS = {
         {
             "id": 15,
             "question": "如果一个Bean的作用域设置为session，则该Bean实例在以下哪种情况下会被销毁?( )",
-            "options": {"A": "用户关闭浏览器", "B": "用户刷新页面", "C": "服务器重启", "D": "超过session超时时间或调用invalidate( )"},
+            "options": {
+                "A": "用户关闭浏览器",
+                "B": "用户刷新页面",
+                "C": "服务器重启",
+                "D": "超过session超时时间或调用invalidate( )"
+            },
             "answer": ["D"],
             "type": "single",
             "source": ""
@@ -5994,7 +6069,12 @@ const SUBJECTS = {
         {
             "id": 16,
             "question": "在JSP页面中使用<jsp:setProperty>标记时，若要将请求参数userName的值设置给Bean的name属性，正确的写法是( )",
-            "options": {"A": "<jsp:setProperty name=\"bean\" property=\"name\" value=\"userName\"/>", "B": "<jsp:setProperty name=\"bean\" property=\"name\" param=\"userName\"/>", "C": "<jsp:setProperty name=\"bean\" property=\"userName\" value=\"name\"/>", "D": "<jsp:setProperty name=\"bean\" property=\"*\"/>"},
+            "options": {
+                "A": "<jsp:setProperty name=\"bean\" property=\"name\" value=\"userName\"/>",
+                "B": "<jsp:setProperty name=\"bean\" property=\"name\" param=\"userName\"/>",
+                "C": "<jsp:setProperty name=\"bean\" property=\"userName\" value=\"name\"/>",
+                "D": "<jsp:setProperty name=\"bean\" property=\"*\"/>"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6002,7 +6082,12 @@ const SUBJECTS = {
         {
             "id": 17,
             "question": "Spring MVC的核心前端控制器是？",
-            "options": {"A": "DispatcherServlet", "B": "HandlerMapping", "C": "Controller", "D": "ViewResolver"},
+            "options": {
+                "A": "DispatcherServlet",
+                "B": "HandlerMapping",
+                "C": "Controller",
+                "D": "ViewResolver"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6010,7 +6095,12 @@ const SUBJECTS = {
         {
             "id": 18,
             "question": "MyBatis-Plus的核心功能不包括以下哪项？",
-            "options": {"A": "通用CRUD接口", "B": "代码生成器", "C": "手动编写所有SQL语句", "D": "条件构造器"},
+            "options": {
+                "A": "通用CRUD接口",
+                "B": "代码生成器",
+                "C": "手动编写所有SQL语句",
+                "D": "条件构造器"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -6018,7 +6108,12 @@ const SUBJECTS = {
         {
             "id": 19,
             "question": "Spring Boot的核心设计思想是？",
-            "options": {"A": "约定大于配置", "B": "配置大于约定", "C": "代码生成优先", "D": "手动配置优先"},
+            "options": {
+                "A": "约定大于配置",
+                "B": "配置大于约定",
+                "C": "代码生成优先",
+                "D": "手动配置优先"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6026,7 +6121,12 @@ const SUBJECTS = {
         {
             "id": 20,
             "question": "MyBatis中用于实现动态SQL条件判断的标签是？",
-            "options": {"A": "<if>", "B": "<select>", "C": "<resultMap>", "D": "<insert>"},
+            "options": {
+                "A": "<if>",
+                "B": "<select>",
+                "C": "<resultMap>",
+                "D": "<insert>"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6034,7 +6134,12 @@ const SUBJECTS = {
         {
             "id": 21,
             "question": "Spring Boot起步依赖的主要作用是？",
-            "options": {"A": "增加项目的复杂度", "B": "简化Maven依赖管理", "C": "替代Spring框架", "D": "仅用于前端开发"},
+            "options": {
+                "A": "增加项目的复杂度",
+                "B": "简化Maven依赖管理",
+                "C": "替代Spring框架",
+                "D": "仅用于前端开发"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6042,7 +6147,12 @@ const SUBJECTS = {
         {
             "id": 22,
             "question": "MyBatis的核心思想是将SQL从Java代码中分离，通过XML或注解管理，其主要目的是？",
-            "options": {"A": "提高Java代码的执行效率", "B": "解耦SQL与业务逻辑", "C": "增加代码的复杂度", "D": "减少数据库连接次数"},
+            "options": {
+                "A": "提高Java代码的执行效率",
+                "B": "解耦SQL与业务逻辑",
+                "C": "增加代码的复杂度",
+                "D": "减少数据库连接次数"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6050,7 +6160,12 @@ const SUBJECTS = {
         {
             "id": 23,
             "question": "Spring MVC中，用于将请求参数绑定到方法参数的注解是？",
-            "options": {"A": "@RequestMapping", "B": "@RequestParam", "C": "@ResponseBody", "D": "@Controller"},
+            "options": {
+                "A": "@RequestMapping",
+                "B": "@RequestParam",
+                "C": "@ResponseBody",
+                "D": "@Controller"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6058,7 +6173,12 @@ const SUBJECTS = {
         {
             "id": 24,
             "question": "Spring Boot自动配置的实现基础是？",
-            "options": {"A": "条件注解", "B": "XML配置", "C": "手动编写配置类", "D": "静态资源文件"},
+            "options": {
+                "A": "条件注解",
+                "B": "XML配置",
+                "C": "手动编写配置类",
+                "D": "静态资源文件"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6066,7 +6186,12 @@ const SUBJECTS = {
         {
             "id": 25,
             "question": "在MyBatis核心工作流程中，创建SqlSession的工厂类是？",
-            "options": {"A": "SqlSession", "B": "SqlSessionFactory", "C": "MapperProxy", "D": "ResultSet"},
+            "options": {
+                "A": "SqlSession",
+                "B": "SqlSessionFactory",
+                "C": "MapperProxy",
+                "D": "ResultSet"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6074,7 +6199,12 @@ const SUBJECTS = {
         {
             "id": 26,
             "question": "JSP表达式的语法格式是（）",
-            "options": {"A": "<%表达式%>", "B": "<%=表达式%>", "C": "<%!表达式%>", "D": "<%@表达式%>"},
+            "options": {
+                "A": "<%表达式%>",
+                "B": "<%=表达式%>",
+                "C": "<%!表达式%>",
+                "D": "<%@表达式%>"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6082,7 +6212,12 @@ const SUBJECTS = {
         {
             "id": 27,
             "question": "用于在JSP中声明成员变量和方法的语法是（）",
-            "options": {"A": "<% Java代码%>", "B": "<%! Java声明%>", "C": "<%= Java表达式%>", "D": "<%--注释--%>"},
+            "options": {
+                "A": "<% Java代码%>",
+                "B": "<%! Java声明%>",
+                "C": "<%= Java表达式%>",
+                "D": "<%--注释--%>"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6090,7 +6225,12 @@ const SUBJECTS = {
         {
             "id": 28,
             "question": "下列指令中，用于导入Java包的是（）",
-            "options": {"A": "page指令", "B": "include指令", "C": "forward指令", "D": "param指令"},
+            "options": {
+                "A": "page指令",
+                "B": "include指令",
+                "C": "forward指令",
+                "D": "param指令"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6098,7 +6238,12 @@ const SUBJECTS = {
         {
             "id": 29,
             "question": "<%@ include file=\"header.jsp\" %>是（）",
-            "options": {"A": "动态包含", "B": "静态包含", "C": "请求转发", "D": "参数传递"},
+            "options": {
+                "A": "动态包含",
+                "B": "静态包含",
+                "C": "请求转发",
+                "D": "参数传递"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6106,7 +6251,12 @@ const SUBJECTS = {
         {
             "id": 30,
             "question": "获取表单单行文本框数据，应使用request对象的（）方法",
-            "options": {"A": "getAttribute()", "B": "getParameter()", "C": "getParameterValues()", "D": "setAttribute()"},
+            "options": {
+                "A": "getAttribute()",
+                "B": "getParameter()",
+                "C": "getParameterValues()",
+                "D": "setAttribute()"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6114,7 +6264,12 @@ const SUBJECTS = {
         {
             "id": 31,
             "question": "解决POST提交中文乱码，应在JSP页面开头设置（）",
-            "options": {"A": "request.setCharacterEncoding(\"UTF-8\")", "B": "response.setCharacterEncoding(\"UTF-8\")", "C": "session.setEncoding(\"UTF-8\")", "D": "pageEncoding=\"UTF-8\""},
+            "options": {
+                "A": "request.setCharacterEncoding(\"UTF-8\")",
+                "B": "response.setCharacterEncoding(\"UTF-8\")",
+                "C": "session.setEncoding(\"UTF-8\")",
+                "D": "pageEncoding=\"UTF-8\""
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6122,7 +6277,12 @@ const SUBJECTS = {
         {
             "id": 32,
             "question": "下列关于<jsp:forward>说法正确的是（）",
-            "options": {"A": "地址栏会改变", "B": "属于客户端跳转", "C": "可通过request传递数据", "D": "会发起两次请求"},
+            "options": {
+                "A": "地址栏会改变",
+                "B": "属于客户端跳转",
+                "C": "可通过request传递数据",
+                "D": "会发起两次请求"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -6130,7 +6290,12 @@ const SUBJECTS = {
         {
             "id": 33,
             "question": "用于保存一次会话数据的内置对象是（）",
-            "options": {"A": "request", "B": "session", "C": "application", "D": "pageContext"},
+            "options": {
+                "A": "request",
+                "B": "session",
+                "C": "application",
+                "D": "pageContext"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6138,7 +6303,12 @@ const SUBJECTS = {
         {
             "id": 34,
             "question": "所有用户共享、服务器关闭才销毁的对象是（）",
-            "options": {"A": "request", "B": "session", "C": "application", "D": "page"},
+            "options": {
+                "A": "request",
+                "B": "session",
+                "C": "application",
+                "D": "page"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -6146,7 +6316,12 @@ const SUBJECTS = {
         {
             "id": 35,
             "question": "JSP页面域（当前页面有效）对应的对象是（）",
-            "options": {"A": "pageContext", "B": "request", "C": "session", "D": "application"},
+            "options": {
+                "A": "pageContext",
+                "B": "request",
+                "C": "session",
+                "D": "application"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6154,7 +6329,12 @@ const SUBJECTS = {
         {
             "id": 36,
             "question": "Servlet的本质是什么？",
-            "options": {"A": "运行在客户端的Java程序", "B": "运行在服务器端的Java程序", "C": "HTML页面的扩展", "D": "数据库连接工具"},
+            "options": {
+                "A": "运行在客户端的Java程序",
+                "B": "运行在服务器端的Java程序",
+                "C": "HTML页面的扩展",
+                "D": "数据库连接工具"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6162,7 +6342,12 @@ const SUBJECTS = {
         {
             "id": 37,
             "question": "Filter的doFilter()方法的作用是什么？",
-            "options": {"A": "初始化过滤器", "B": "执行过滤逻辑", "C": "销毁过滤器", "D": "获取过滤器配置"},
+            "options": {
+                "A": "初始化过滤器",
+                "B": "执行过滤逻辑",
+                "C": "销毁过滤器",
+                "D": "获取过滤器配置"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6170,7 +6355,12 @@ const SUBJECTS = {
         {
             "id": 38,
             "question": "JavaBean组件在JSP开发中的主要作用是什么？",
-            "options": {"A": "替代HTML代码实现页面布局", "B": "封装业务逻辑，实现代码重用", "C": "直接处理HTTP请求与响应", "D": "存储用户会话信息"},
+            "options": {
+                "A": "替代HTML代码实现页面布局",
+                "B": "封装业务逻辑，实现代码重用",
+                "C": "直接处理HTTP请求与响应",
+                "D": "存储用户会话信息"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6178,7 +6368,12 @@ const SUBJECTS = {
         {
             "id": 39,
             "question": "在JSP开发的初级阶段，将大量Java代码嵌入JSP页面会导致什么问题？",
-            "options": {"A": "提高代码的可重用性", "B": "便于页面编程人员与Java程序员协作", "C": "降低HTML与Java代码的耦合度", "D": "增加修改和维护的难度"},
+            "options": {
+                "A": "提高代码的可重用性",
+                "B": "便于页面编程人员与Java程序员协作",
+                "C": "降低HTML与Java代码的耦合度",
+                "D": "增加修改和维护的难度"
+            },
             "answer": ["D"],
             "type": "single",
             "source": ""
@@ -6186,7 +6381,12 @@ const SUBJECTS = {
         {
             "id": 40,
             "question": "过滤器（Filter）的作用是什么？",
-            "options": {"A": "仅过滤客户端的HTTP请求", "B": "仅过滤服务器的HTTP响应", "C": "既过滤请求也过滤响应", "D": "替代Servlet处理请求"},
+            "options": {
+                "A": "仅过滤客户端的HTTP请求",
+                "B": "仅过滤服务器的HTTP响应",
+                "C": "既过滤请求也过滤响应",
+                "D": "替代Servlet处理请求"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -6194,7 +6394,12 @@ const SUBJECTS = {
         {
             "id": 41,
             "question": "JSP Model1架构在大型项目中的主要问题是什么？",
-            "options": {"A": "JavaBean无法封装业务逻辑", "B": "JSP页面仍需嵌入大量流程控制代码", "C": "无法实现代码重用", "D": "不支持数据库操作"},
+            "options": {
+                "A": "JavaBean无法封装业务逻辑",
+                "B": "JSP页面仍需嵌入大量流程控制代码",
+                "C": "无法实现代码重用",
+                "D": "不支持数据库操作"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6202,7 +6407,12 @@ const SUBJECTS = {
         {
             "id": 42,
             "question": "以下哪个对象的作用域是整个Web应用？",
-            "options": {"A": "request", "B": "session", "C": "application", "D": "page"},
+            "options": {
+                "A": "request",
+                "B": "session",
+                "C": "application",
+                "D": "page"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -6210,7 +6420,12 @@ const SUBJECTS = {
         {
             "id": 43,
             "question": "以下哪个方法用于向session对象中保存数据？",
-            "options": {"A": "getAttribute(String key)", "B": "setAttribute(String key, Object obj)", "C": "removeAttribute(String key)", "D": "getId()"},
+            "options": {
+                "A": "getAttribute(String key)",
+                "B": "setAttribute(String key, Object obj)",
+                "C": "removeAttribute(String key)",
+                "D": "getId()"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6218,7 +6433,12 @@ const SUBJECTS = {
         {
             "id": 44,
             "question": "Web服务器如何区分不同用户的session对象？",
-            "options": {"A": "用户IP地址", "B": "session ID", "C": "浏览器类型", "D": "请求URL"},
+            "options": {
+                "A": "用户IP地址",
+                "B": "session ID",
+                "C": "浏览器类型",
+                "D": "请求URL"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6226,7 +6446,12 @@ const SUBJECTS = {
         {
             "id": 45,
             "question": "以下哪项不是JavaBean的特点？",
-            "options": {"A": "必须具有无参构造函数", "B": "属性必须私有化", "C": "通过public的get/set方法暴露属性", "D": "必须继承HttpServlet类"},
+            "options": {
+                "A": "必须具有无参构造函数",
+                "B": "属性必须私有化",
+                "C": "通过public的get/set方法暴露属性",
+                "D": "必须继承HttpServlet类"
+            },
             "answer": ["D"],
             "type": "single",
             "source": ""
@@ -6234,7 +6459,12 @@ const SUBJECTS = {
         {
             "id": 46,
             "question": "session对象的生命周期从何时开始？",
-            "options": {"A": "浏览器打开时", "B": "客户端连接到Web应用程序时", "C": "服务器启动时", "D": "调用session.setAttribute()方法时"},
+            "options": {
+                "A": "浏览器打开时",
+                "B": "客户端连接到Web应用程序时",
+                "C": "服务器启动时",
+                "D": "调用session.setAttribute()方法时"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6242,7 +6472,12 @@ const SUBJECTS = {
         {
             "id": 47,
             "question": "编写Servlet类时需要继承哪个类？",
-            "options": {"A": "jakarta.servlet.Filter", "B": "jakarta.servlet.http.HttpServlet", "C": "jakarta.servlet.ServletContext", "D": "jakarta.servlet.http.HttpSession"},
+            "options": {
+                "A": "jakarta.servlet.Filter",
+                "B": "jakarta.servlet.http.HttpServlet",
+                "C": "jakarta.servlet.ServletContext",
+                "D": "jakarta.servlet.http.HttpSession"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6250,7 +6485,12 @@ const SUBJECTS = {
         {
             "id": 48,
             "question": "Servlet的init()方法在何时被调用？",
-            "options": {"A": "服务器启动时", "B": "第一次请求Servlet时", "C": "每次请求Servlet时", "D": "服务器关闭时"},
+            "options": {
+                "A": "服务器启动时",
+                "B": "第一次请求Servlet时",
+                "C": "每次请求Servlet时",
+                "D": "服务器关闭时"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6258,7 +6498,12 @@ const SUBJECTS = {
         {
             "id": 49,
             "question": "JSP Model2架构对应MVC模式中的哪个角色由Servlet实现？",
-            "options": {"A": "Model（模型）", "B": "View（视图）", "C": "Controller（控制器）", "D": "None of the above"},
+            "options": {
+                "A": "Model（模型）",
+                "B": "View（视图）",
+                "C": "Controller（控制器）",
+                "D": "None of the above"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -6266,7 +6511,12 @@ const SUBJECTS = {
         {
             "id": 50,
             "question": "JSP Model1架构的核心组成部分是什么？",
-            "options": {"A": "JSP + Servlet + JavaBean", "B": "JSP + JavaBean", "C": "Servlet + Filter + Listener", "D": "HTML + CSS + JavaScript"},
+            "options": {
+                "A": "JSP + Servlet + JavaBean",
+                "B": "JSP + JavaBean",
+                "C": "Servlet + Filter + Listener",
+                "D": "HTML + CSS + JavaScript"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6274,7 +6524,12 @@ const SUBJECTS = {
         {
             "id": 51,
             "question": "下面是一个Servlet部署文件的片段: <servlet>  <servlet-name>Hello</servlet-name>  <servlet-class>myservlet.example.FirstServlet</servlet-class> </servlet> <servlet-mapping>  <servlet-name>Hello</servlet-name>  <url-pattern>/helpHello</url-pattern> </servlet-mapping> 在上述部署中，Servlet的类名是( )。",
-            "options": {"A": "FirstServlet", "B": "Hello", "C": "helpHello", "D": "/helpHello"},
+            "options": {
+                "A": "FirstServlet",
+                "B": "Hello",
+                "C": "helpHello",
+                "D": "/helpHello"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6282,7 +6537,12 @@ const SUBJECTS = {
         {
             "id": 52,
             "question": "在JDBC中,使用PreparedStatement进行批量更新时,添加批量操作的方法是()",
-            "options": {"A": "addBatch()", "B": "batchUpdate()", "C": "executeBatch()", "D": "setBatch()"},
+            "options": {
+                "A": "addBatch()",
+                "B": "batchUpdate()",
+                "C": "executeBatch()",
+                "D": "setBatch()"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6290,7 +6550,12 @@ const SUBJECTS = {
         {
             "id": 53,
             "question": "MySQL 8.0版本的JDBC驱动类名是()",
-            "options": {"A": "com.mysql.cj.jdbc.Driver", "B": "com.mysql.jdbc.Driver", "C": "oracle.jdbc.driver.OracleDriver", "D": "org.postgresql.Driver"},
+            "options": {
+                "A": "com.mysql.cj.jdbc.Driver",
+                "B": "com.mysql.jdbc.Driver",
+                "C": "oracle.jdbc.driver.OracleDriver",
+                "D": "org.postgresql.Driver"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6298,7 +6563,12 @@ const SUBJECTS = {
         {
             "id": 54,
             "question": "在JSP页面中,使用EL表达式获取session作用域中名为'user'的对象的'username'属性,正确的写法是()",
-            "options": {"A": "${sessionScope.user.username}", "B": "${requestScope.user.username}", "C": "${applicationScope.user.username}", "D": "${pageScope.user.username}"},
+            "options": {
+                "A": "${sessionScope.user.username}",
+                "B": "${requestScope.user.username}",
+                "C": "${applicationScope.user.username}",
+                "D": "${pageScope.user.username}"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6306,7 +6576,12 @@ const SUBJECTS = {
         {
             "id": 55,
             "question": "EL表达式中表示逻辑与的运算符是()",
-            "options": {"A": "&&", "B": "||", "C": "!", "D": "&"},
+            "options": {
+                "A": "&&",
+                "B": "||",
+                "C": "!",
+                "D": "&"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6314,7 +6589,12 @@ const SUBJECTS = {
         {
             "id": 56,
             "question": "使用EL表达式获取请求参数'username'的值,正确的写法是()",
-            "options": {"A": "${param.username}", "B": "${request.getParameter('username')}", "C": "${params.username}", "D": "${requestScope.username}"},
+            "options": {
+                "A": "${param.username}",
+                "B": "${request.getParameter('username')}",
+                "C": "${params.username}",
+                "D": "${requestScope.username}"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6322,7 +6602,12 @@ const SUBJECTS = {
         {
             "id": 57,
             "question": "在HTML表单中实现文件上传,form标签的enctype属性应设置为()",
-            "options": {"A": "multipart/form-data", "B": "application/x-www-form-urlencoded", "C": "text/plain", "D": "application/json"},
+            "options": {
+                "A": "multipart/form-data",
+                "B": "application/x-www-form-urlencoded",
+                "C": "text/plain",
+                "D": "application/json"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6330,7 +6615,12 @@ const SUBJECTS = {
         {
             "id": 58,
             "question": "在JSP页面中,使用JSTL的<c:if>标签判断EL表达式${user.age > 18}是否成立,正确的写法是()",
-            "options": {"A": "<c:if test='${user.age > 18}'>成年</c:if>", "B": "<c:if condition='${user.age > 18}'>成年</c:if>", "C": "<c:if value='${user.age > 18}'>成年</c:if>", "D": "<c:if judge='${user.age > 18}'>成年</c:if>"},
+            "options": {
+                "A": "<c:if test='${user.age > 18}'>成年</c:if>",
+                "B": "<c:if condition='${user.age > 18}'>成年</c:if>",
+                "C": "<c:if value='${user.age > 18}'>成年</c:if>",
+                "D": "<c:if judge='${user.age > 18}'>成年</c:if>"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6338,7 +6628,12 @@ const SUBJECTS = {
         {
             "id": 59,
             "question": "使用JDBC连接MySQL 8.0数据库,URL中需要指定的时区参数是()",
-            "options": {"A": "serverTimezone", "B": "timezone", "C": "dbTimezone", "D": "zone"},
+            "options": {
+                "A": "serverTimezone",
+                "B": "timezone",
+                "C": "dbTimezone",
+                "D": "zone"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6346,7 +6641,12 @@ const SUBJECTS = {
         {
             "id": 60,
             "question": "使用JSTL的<c:forEach>标签遍历EL表达式${users}中的用户列表,并输出每个用户的姓名,正确的写法是()",
-            "options": {"A": "<c:forEach items='{users}' var='u'>{u.name}</c:forEach>", "B": "<c:forEach collection='{users}' var='u'>{u.name}</c:forEach>", "C": "<c:forEach list='{users}' var='u'>{u.name}</c:forEach>", "D": "<c:forEach array='{users}' var='u'>{u.name}</c:forEach>"},
+            "options": {
+                "A": "<c:forEach items='{users}' var='u'>{u.name}</c:forEach>",
+                "B": "<c:forEach collection='{users}' var='u'>{u.name}</c:forEach>",
+                "C": "<c:forEach list='{users}' var='u'>{u.name}</c:forEach>",
+                "D": "<c:forEach array='{users}' var='u'>{u.name}</c:forEach>"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6354,7 +6654,12 @@ const SUBJECTS = {
         {
             "id": 61,
             "question": "在Apache Commons FileUpload中,判断FileItem是否为普通表单字段的方法是()",
-            "options": {"A": "isFormField()", "B": "isFile()", "C": "isField()", "D": "isUploadFile()"},
+            "options": {
+                "A": "isFormField()",
+                "B": "isFile()",
+                "C": "isField()",
+                "D": "isUploadFile()"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6362,7 +6667,12 @@ const SUBJECTS = {
         {
             "id": 62,
             "question": "在Servlet中实现文件下载功能,需要设置响应头Content-Disposition的值为()",
-            "options": {"A": "attachment;filename=文件名", "B": "inline;filename=文件名", "C": "download;filename=文件名", "D": "save;filename=文件名"},
+            "options": {
+                "A": "attachment;filename=文件名",
+                "B": "inline;filename=文件名",
+                "C": "download;filename=文件名",
+                "D": "save;filename=文件名"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6370,7 +6680,12 @@ const SUBJECTS = {
         {
             "id": 63,
             "question": "使用JSTL的<fmt:formatDate>标签格式化日期为'yyyy-MM-dd'格式,正确的pattern属性值是()",
-            "options": {"A": "yyyy-MM-dd", "B": "YYYY-MM-DD", "C": "yyyy/MM/dd", "D": "yyyy年MM月dd日"},
+            "options": {
+                "A": "yyyy-MM-dd",
+                "B": "YYYY-MM-DD",
+                "C": "yyyy/MM/dd",
+                "D": "yyyy年MM月dd日"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6378,7 +6693,12 @@ const SUBJECTS = {
         {
             "id": 64,
             "question": "以下哪种JDBC对象可以有效防止SQL注入攻击()",
-            "options": {"A": "PreparedStatement", "B": "Statement", "C": "CallableStatement", "D": "ResultSet"},
+            "options": {
+                "A": "PreparedStatement",
+                "B": "Statement",
+                "C": "CallableStatement",
+                "D": "ResultSet"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6386,7 +6706,12 @@ const SUBJECTS = {
         {
             "id": 65,
             "question": "MyBatis中用于执行SQL语句的核心接口是？",
-            "options": {"A": "SqlSessionFactory", "B": "SqlSession", "C": "MapperProxy", "D": "Configuration"},
+            "options": {
+                "A": "SqlSessionFactory",
+                "B": "SqlSession",
+                "C": "MapperProxy",
+                "D": "Configuration"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6394,7 +6719,12 @@ const SUBJECTS = {
         {
             "id": 66,
             "question": "在MyBatis的XML映射文件中，用于定义查询语句的标签是？",
-            "options": {"A": "<insert>", "B": "<update>", "C": "<delete>", "D": "<select>"},
+            "options": {
+                "A": "<insert>",
+                "B": "<update>",
+                "C": "<delete>",
+                "D": "<select>"
+            },
             "answer": ["D"],
             "type": "single",
             "source": ""
@@ -6402,7 +6732,12 @@ const SUBJECTS = {
         {
             "id": 67,
             "question": "在MyBatis中，用于传递多个参数的注解是？",
-            "options": {"A": "@Param", "B": "@ParamMap", "C": "@Arguments", "D": "@Parameters"},
+            "options": {
+                "A": "@Param",
+                "B": "@ParamMap",
+                "C": "@Arguments",
+                "D": "@Parameters"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6410,7 +6745,12 @@ const SUBJECTS = {
         {
             "id": 68,
             "question": "MyBatis-Plus代码生成器的作用是？",
-            "options": {"A": "自动生成数据库表", "B": "自动生成实体类、Mapper接口及XML文件", "C": "自动部署应用", "D": "自动测试代码"},
+            "options": {
+                "A": "自动生成数据库表",
+                "B": "自动生成实体类、Mapper接口及XML文件",
+                "C": "自动部署应用",
+                "D": "自动测试代码"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6418,7 +6758,12 @@ const SUBJECTS = {
         {
             "id": 69,
             "question": "以下哪个注解用于将Controller方法的返回值直接作为JSON格式响应体返回？（）",
-            "options": {"A": "@RestController", "B": "@ResponseBody", "C": "@Controller", "D": "@ResponseStatus"},
+            "options": {
+                "A": "@RestController",
+                "B": "@ResponseBody",
+                "C": "@Controller",
+                "D": "@ResponseStatus"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6426,7 +6771,12 @@ const SUBJECTS = {
         {
             "id": 70,
             "question": "在Spring Boot中整合Spring MVC时，不需要额外配置以下哪项？",
-            "options": {"A": "DispatcherServlet", "B": "视图解析器", "C": "静态资源映射", "D": "拦截器"},
+            "options": {
+                "A": "DispatcherServlet",
+                "B": "视图解析器",
+                "C": "静态资源映射",
+                "D": "拦截器"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6434,7 +6784,12 @@ const SUBJECTS = {
         {
             "id": 71,
             "question": "以下关于Spring MVC和Spring Boot关系的描述，正确的是（）",
-            "options": {"A": "Spring Boot是Spring MVC的替代框架，二者不能同时使用", "B": "Spring Boot自动配置包含了Spring MVC的默认配置，可快速搭建Web应用", "C": "Spring MVC必须依赖Spring Boot才能运行", "D": "Spring Boot只能用于非Web项目开发，无法集成Spring MVC"},
+            "options": {
+                "A": "Spring Boot是Spring MVC的替代框架，二者不能同时使用",
+                "B": "Spring Boot自动配置包含了Spring MVC的默认配置，可快速搭建Web应用",
+                "C": "Spring MVC必须依赖Spring Boot才能运行",
+                "D": "Spring Boot只能用于非Web项目开发，无法集成Spring MVC"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6442,7 +6797,12 @@ const SUBJECTS = {
         {
             "id": 72,
             "question": "MyBatis-Plus中用于构造查询条件的类是？",
-            "options": {"A": "QueryWrapper", "B": "SqlSession", "C": "MapperProxy", "D": "Configuration"},
+            "options": {
+                "A": "QueryWrapper",
+                "B": "SqlSession",
+                "C": "MapperProxy",
+                "D": "Configuration"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6450,7 +6810,12 @@ const SUBJECTS = {
         {
             "id": 73,
             "question": "Spring MVC的前端控制器DispatcherServlet的作用是（）",
-            "options": {"A": "处理所有客户端请求，负责请求分发和响应处理", "B": "仅处理POST请求，不处理GET请求", "C": "负责数据库连接和事务管理", "D": "仅用于静态资源的访问处理"},
+            "options": {
+                "A": "处理所有客户端请求，负责请求分发和响应处理",
+                "B": "仅处理POST请求，不处理GET请求",
+                "C": "负责数据库连接和事务管理",
+                "D": "仅用于静态资源的访问处理"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6458,7 +6823,12 @@ const SUBJECTS = {
         {
             "id": 74,
             "question": "Spring Boot应用的启动类通常需要添加哪个注解？",
-            "options": {"A": "@SpringBootApplication", "B": "@Configuration", "C": "@ComponentScan", "D": "@EnableAutoConfiguration"},
+            "options": {
+                "A": "@SpringBootApplication",
+                "B": "@Configuration",
+                "C": "@ComponentScan",
+                "D": "@EnableAutoConfiguration"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6466,7 +6836,12 @@ const SUBJECTS = {
         {
             "id": 75,
             "question": "在Spring MVC中，用于标识控制器类的注解是以下哪一个？",
-            "options": {"A": "@Service", "B": "@Controller", "C": "@Repository", "D": "@Component"},
+            "options": {
+                "A": "@Service",
+                "B": "@Controller",
+                "C": "@Repository",
+                "D": "@Component"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6474,7 +6849,12 @@ const SUBJECTS = {
         {
             "id": 76,
             "question": "在Spring MVC中，若要实现文件上传功能，需要配置以下哪个组件？（）",
-            "options": {"A": "DispatcherServlet", "B": "MultipartResolver", "C": "ViewResolver", "D": "HandlerMapping"},
+            "options": {
+                "A": "DispatcherServlet",
+                "B": "MultipartResolver",
+                "C": "ViewResolver",
+                "D": "HandlerMapping"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6482,7 +6862,12 @@ const SUBJECTS = {
         {
             "id": 77,
             "question": "Spring Boot Starter的作用是？",
-            "options": {"A": "提供项目模板", "B": "简化依赖管理", "C": "自动生成代码", "D": "部署应用程序"},
+            "options": {
+                "A": "提供项目模板",
+                "B": "简化依赖管理",
+                "C": "自动生成代码",
+                "D": "部署应用程序"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6490,7 +6875,12 @@ const SUBJECTS = {
         {
             "id": 78,
             "question": "在Spring MVC中，用于映射HTTP GET请求的注解是？",
-            "options": {"A": "@PostMapping", "B": "@GetMapping", "C": "@PutMapping", "D": "@DeleteMapping"},
+            "options": {
+                "A": "@PostMapping",
+                "B": "@GetMapping",
+                "C": "@PutMapping",
+                "D": "@DeleteMapping"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6498,7 +6888,12 @@ const SUBJECTS = {
         {
             "id": 79,
             "question": "在Spring Boot中整合MyBatis时，需要添加的Starter依赖是？",
-            "options": {"A": "spring-boot-starter-web", "B": "spring-boot-starter-jdbc", "C": "mybatis-spring-boot-starter", "D": "spring-boot-starter-test"},
+            "options": {
+                "A": "spring-boot-starter-web",
+                "B": "spring-boot-starter-jdbc",
+                "C": "mybatis-spring-boot-starter",
+                "D": "spring-boot-starter-test"
+            },
             "answer": ["C"],
             "type": "single",
             "source": ""
@@ -6506,7 +6901,12 @@ const SUBJECTS = {
         {
             "id": 80,
             "question": "MyBatis-Plus的主要优势是？",
-            "options": {"A": "需要手动编写所有SQL语句", "B": "提供CRUD操作的自动生成", "C": "仅支持XML配置", "D": "不兼容MyBatis"},
+            "options": {
+                "A": "需要手动编写所有SQL语句",
+                "B": "提供CRUD操作的自动生成",
+                "C": "仅支持XML配置",
+                "D": "不兼容MyBatis"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6514,7 +6914,12 @@ const SUBJECTS = {
         {
             "id": 81,
             "question": "以下关于Spring MVC视图解析器的描述，正确的是（）",
-            "options": {"A": "视图解析器负责将Controller返回的逻辑视图名解析为物理视图地址", "B": "视图解析器仅支持JSP视图，不支持其他类型视图", "C": "视图解析器必须手动配置，Spring MVC无默认实现", "D": "视图解析器直接处理业务逻辑，不参与视图渲染"},
+            "options": {
+                "A": "视图解析器负责将Controller返回的逻辑视图名解析为物理视图地址",
+                "B": "视图解析器仅支持JSP视图，不支持其他类型视图",
+                "C": "视图解析器必须手动配置，Spring MVC无默认实现",
+                "D": "视图解析器直接处理业务逻辑，不参与视图渲染"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6522,7 +6927,12 @@ const SUBJECTS = {
         {
             "id": 82,
             "question": "在Spring MVC中，用于处理客户端请求并返回响应的核心组件是（）",
-            "options": {"A": "Controller", "B": "Service", "C": "Repository", "D": "Configuration"},
+            "options": {
+                "A": "Controller",
+                "B": "Service",
+                "C": "Repository",
+                "D": "Configuration"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6530,7 +6940,12 @@ const SUBJECTS = {
         {
             "id": 83,
             "question": "MyBatis中，Mapper接口的实现类是如何生成的？",
-            "options": {"A": "手动编写", "B": "动态代理", "C": "XML配置生成", "D": "注解配置生成"},
+            "options": {
+                "A": "手动编写",
+                "B": "动态代理",
+                "C": "XML配置生成",
+                "D": "注解配置生成"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6538,7 +6953,10 @@ const SUBJECTS = {
         {
             "id": 84,
             "question": "jsp:param动作标记不能单独使用，必须作为jsp:include、jsp:forward标记等的子标记使用，并为它们提供参数。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6546,7 +6964,10 @@ const SUBJECTS = {
         {
             "id": 85,
             "question": "jsp:include动作标记与include指令标记包含文件的处理时间和方式不同。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6554,7 +6975,10 @@ const SUBJECTS = {
         {
             "id": 86,
             "question": "不可以用一个page指令指定多个属性的取值。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6562,7 +6986,10 @@ const SUBJECTS = {
         {
             "id": 87,
             "question": "程序中声明的变量不同于在“<%!”和“%>”中声明的页面成员变量，不能在不同客户访问页面的线程之间共享。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6570,7 +6997,10 @@ const SUBJECTS = {
         {
             "id": 88,
             "question": "程序片变量的有效范围与其声明位置有关，即从声明位置向后有效，可以在声明位置后的程序片、表达式中使用。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6578,7 +7008,10 @@ const SUBJECTS = {
         {
             "id": 89,
             "question": "JSP页面的成员方法不可以在JSP页面的Java程序片中调用。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6586,7 +7019,10 @@ const SUBJECTS = {
         {
             "id": 90,
             "question": "在“<%”和“%>”标记之间声明的Java的变量在整个页面内有效，不同的客户之间不共享。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6594,7 +7030,10 @@ const SUBJECTS = {
         {
             "id": 91,
             "question": "JSP页面中的变量和方法声明、表达式和Java程序片统称为JSP脚本元素。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6602,7 +7041,10 @@ const SUBJECTS = {
         {
             "id": 92,
             "question": "Web应用程序是一种通过浏览器访问的B/S结构的应用程序。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6610,7 +7052,10 @@ const SUBJECTS = {
         {
             "id": 93,
             "question": "JavaBean类中，如果有一个String类型的属性name，那么必须提供getName( )和setName( )两个方法。( )",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6618,7 +7063,10 @@ const SUBJECTS = {
         {
             "id": 94,
             "question": "如果Bean中有一个boolean类型的属性married，则对应的getter方法名称必须是isMarried( )。( )",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6626,7 +7074,10 @@ const SUBJECTS = {
         {
             "id": 95,
             "question": "在JSP中，可以不使用任何动作标记，直接通过new关键字创建JavaBean实例。( )",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6634,7 +7085,10 @@ const SUBJECTS = {
         {
             "id": 96,
             "question": "JavaBean的类文件可以放在WEB-INF目录下的任何位置，不需要打包。( )",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6642,7 +7096,10 @@ const SUBJECTS = {
         {
             "id": 97,
             "question": "Filter接口包含init、doFilter和destroy三个核心方法，其中doFilter方法每次请求时都会被调用。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6650,7 +7107,10 @@ const SUBJECTS = {
         {
             "id": 98,
             "question": "JSP Model2对应MVC模式，其中Servlet担任控制器角色，JSP担任视图角色，JavaBean担任模型角色。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6658,7 +7118,10 @@ const SUBJECTS = {
         {
             "id": 99,
             "question": "JSP Model2通过分离页面显示、流程控制和业务逻辑，解决了Model1在大型项目中的维护问题。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6666,7 +7129,10 @@ const SUBJECTS = {
         {
             "id": 100,
             "question": "编写Servlet类时必须直接实现Servlet接口，不能继承HttpServlet类。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6674,7 +7140,10 @@ const SUBJECTS = {
         {
             "id": 101,
             "question": "Servlet是Java编写的服务器端小程序，主要用于接收HTTP请求、处理业务逻辑并返回响应。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6682,7 +7151,10 @@ const SUBJECTS = {
         {
             "id": 102,
             "question": "多个Filter的拦截顺序仅由web.xml中的配置顺序决定，与注解方式无关。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6690,7 +7162,10 @@ const SUBJECTS = {
         {
             "id": 103,
             "question": "Servlet的service方法会根据请求类型（GET/POST）自动调用doGet或doPost方法。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6698,7 +7173,10 @@ const SUBJECTS = {
         {
             "id": 104,
             "question": "创建Servlet类后无需部署即可直接运行，Web服务器会自动识别并调用。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6706,7 +7184,10 @@ const SUBJECTS = {
         {
             "id": 105,
             "question": "Filter只能通过web.xml进行部署，不支持注解方式。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6714,7 +7195,10 @@ const SUBJECTS = {
         {
             "id": 106,
             "question": "Filter的init方法在服务器启动时调用一次，destroy方法在服务器关闭时调用一次。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6722,7 +7206,10 @@ const SUBJECTS = {
         {
             "id": 107,
             "question": "EL中只能使用\".\"操作符访问JavaBean的属性",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6730,7 +7217,10 @@ const SUBJECTS = {
         {
             "id": 108,
             "question": "${null}在EL中会输出\"null\"字符串",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6738,7 +7228,10 @@ const SUBJECTS = {
         {
             "id": 109,
             "question": "EL表达式的基本语法格式是${表达式}",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6746,7 +7239,10 @@ const SUBJECTS = {
         {
             "id": 110,
             "question": "EL表达式${user.name}会自动调用user对象的getName()方法",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6754,7 +7250,10 @@ const SUBJECTS = {
         {
             "id": 111,
             "question": "（ ）Tomcat 默认的端口号是 8080。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6762,7 +7261,10 @@ const SUBJECTS = {
         {
             "id": 112,
             "question": "（ ）JSP 页面中的成员变量在每次用户访问时都会重新初始化。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6770,7 +7272,10 @@ const SUBJECTS = {
         {
             "id": 113,
             "question": "（ ）JSP 表达式<%= %>的末尾需要加分号。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6778,7 +7283,10 @@ const SUBJECTS = {
         {
             "id": 114,
             "question": "（ ）request.getParameter()方法用于获取多个同名的表单数据。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6786,7 +7294,10 @@ const SUBJECTS = {
         {
             "id": 115,
             "question": "（ ）session对象在整个 Web 应用的所有用户之间共享数据。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6794,7 +7305,10 @@ const SUBJECTS = {
         {
             "id": 116,
             "question": "（ ）application对象在服务器关闭时才被销毁。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6802,7 +7316,10 @@ const SUBJECTS = {
         {
             "id": 117,
             "question": "（ ）<%@ include file=\"xxx.jsp\" %>是动态嵌入。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6810,7 +7327,10 @@ const SUBJECTS = {
         {
             "id": 118,
             "question": "（ ）response.sendRedirect()是客户端重定向。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6818,7 +7338,10 @@ const SUBJECTS = {
         {
             "id": 119,
             "question": "（）JSP 页面中可以不包含任何 HTML 标记。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6826,7 +7349,10 @@ const SUBJECTS = {
         {
             "id": 120,
             "question": "（ ）<jsp:forward>动作标记会将控制权转回原页面。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6834,7 +7360,10 @@ const SUBJECTS = {
         {
             "id": 121,
             "question": "JSTL标签库可以直接读取域对象中的数据。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6842,7 +7371,10 @@ const SUBJECTS = {
         {
             "id": 122,
             "question": "文件上传表单必须设置enctype为multipart/form-data。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6850,7 +7382,10 @@ const SUBJECTS = {
         {
             "id": 123,
             "question": "JDBC主要完成建立数据库连接、发送SQL命令、处理返回结果三件事。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6858,7 +7393,10 @@ const SUBJECTS = {
         {
             "id": 124,
             "question": "page指令中isELIgnored属性的默认值为true。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6866,7 +7404,10 @@ const SUBJECTS = {
         {
             "id": 125,
             "question": "Servlet 3.0版本开始提供内置的文件上传功能。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6874,7 +7415,10 @@ const SUBJECTS = {
         {
             "id": 126,
             "question": "EL表达式的语法格式是<%= ... %>。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6882,7 +7426,10 @@ const SUBJECTS = {
         {
             "id": 127,
             "question": "JSTL核心标签库可以实现if/for等流程控制语句。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6890,7 +7437,10 @@ const SUBJECTS = {
         {
             "id": 128,
             "question": "EL表达式能够实现复杂的循环逻辑处理。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6898,7 +7448,10 @@ const SUBJECTS = {
         {
             "id": 129,
             "question": "@Controller注解用于标识一个类为Spring MVC的控制器，处理用户请求。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6906,7 +7459,10 @@ const SUBJECTS = {
         {
             "id": 130,
             "question": "Spring MVC的工作流程包括：请求→DispatcherServlet→HandlerMapping→Controller→ModelAndView→ViewResolver→视图渲染。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6914,7 +7470,10 @@ const SUBJECTS = {
         {
             "id": 131,
             "question": "Spring MVC只能将请求参数绑定到基本数据类型，无法绑定到自定义实体类。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6922,7 +7481,10 @@ const SUBJECTS = {
         {
             "id": 132,
             "question": "HandlerMapping组件的作用是根据URL找到对应的Controller处理方法。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6930,7 +7492,10 @@ const SUBJECTS = {
         {
             "id": 133,
             "question": "在Model2模式中，每个用户管理功能（如添加、删除）都需要单独编写一个Servlet，导致类爆炸问题。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6938,7 +7503,10 @@ const SUBJECTS = {
         {
             "id": 134,
             "question": "Spring MVC中，视图跳转仍需硬编码路径，与Model2模式相同。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6946,7 +7514,10 @@ const SUBJECTS = {
         {
             "id": 135,
             "question": "Spring MVC的核心组件是DispatcherServlet，它作为前端控制器统一处理所有请求。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6954,7 +7525,10 @@ const SUBJECTS = {
         {
             "id": 136,
             "question": "Spring MVC的工作流程中，请求首先到达Controller，再由Controller转发给DispatcherServlet。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6962,7 +7536,10 @@ const SUBJECTS = {
         {
             "id": 137,
             "question": "InternalResourceViewResolver是Spring MVC中常用的视图解析器，用于解析JSP视图。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6970,7 +7547,10 @@ const SUBJECTS = {
         {
             "id": 138,
             "question": "@RequestMapping注解只能用于类级别，不能用于方法级别。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6978,7 +7558,10 @@ const SUBJECTS = {
         {
             "id": 139,
             "question": "Model2模式中，参数获取需要手动调用getParameter()方法，而Spring MVC可自动绑定参数到方法参数或实体对象。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -6986,7 +7569,10 @@ const SUBJECTS = {
         {
             "id": 140,
             "question": "Spring MVC直接提供数据库操作功能，无需整合其他持久层框架（如MyBatis）。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["B"],
             "type": "single",
             "source": ""
@@ -6994,7 +7580,10 @@ const SUBJECTS = {
         {
             "id": 141,
             "question": "ViewResolver组件的作用是根据逻辑视图名解析为具体的视图页面（如JSP）。",
-            "options": {"A": "对", "B": "错"},
+            "options": {
+                "A": "对",
+                "B": "错"
+            },
             "answer": ["A"],
             "type": "single",
             "source": ""
@@ -7049,7 +7638,7 @@ const SUBJECTS = {
         },
         {
             "id": 148,
-            "question": "使用注解的过滤器，当拦截路径相同时，按过滤器类名的____1____顺序执行。",
+            "question": "使用注解的过滤器，当拦截路径相同时，按过滤器类名的________顺序执行。",
             "options": null,
             "answer": ["字典"],
             "type": "fill",
@@ -7057,7 +7646,7 @@ const SUBJECTS = {
         },
         {
             "id": 149,
-            "question": "编写过滤器类需要实现jakarta.servlet包中的____1____接口。",
+            "question": "编写过滤器类需要实现jakarta.servlet包中的________接口。",
             "options": null,
             "answer": ["Filter"],
             "type": "fill",
@@ -7065,7 +7654,7 @@ const SUBJECTS = {
         },
         {
             "id": 150,
-            "question": "统计在线用户通常需要监听____1____对象的创建和销毁事件。",
+            "question": "统计在线用户通常需要监听________对象的创建和销毁事件。",
             "options": null,
             "answer": ["HttpSession"],
             "type": "fill",
@@ -7073,7 +7662,7 @@ const SUBJECTS = {
         },
         {
             "id": 151,
-            "question": "Filter接口的核心方法包括init()、destroy()和____1____方法。",
+            "question": "Filter接口的核心方法包括init()、destroy()和________方法。",
             "options": null,
             "answer": ["doFilter"],
             "type": "fill",
@@ -7081,7 +7670,7 @@ const SUBJECTS = {
         },
         {
             "id": 152,
-            "question": "Servlet3.0开始支持使用____1____注解部署过滤器，无需web.xml配置。",
+            "question": "Servlet3.0开始支持使用________注解部署过滤器，无需web.xml配置。",
             "options": null,
             "answer": ["@WebFilter"],
             "type": "fill",
@@ -7089,7 +7678,7 @@ const SUBJECTS = {
         },
         {
             "id": 153,
-            "question": "Filter接口的init()方法在____1____时调用一次。",
+            "question": "Filter接口的init()方法在________时调用一次。",
             "options": null,
             "answer": ["服务器启动"],
             "type": "fill",
@@ -7097,7 +7686,7 @@ const SUBJECTS = {
         },
         {
             "id": 154,
-            "question": "Filter接口的doFilter()方法在____1____时调用。",
+            "question": "Filter接口的doFilter()方法在________时调用。",
             "options": null,
             "answer": ["每次请求"],
             "type": "fill",
@@ -7105,7 +7694,7 @@ const SUBJECTS = {
         },
         {
             "id": 155,
-            "question": "使用@WebFilter注解时，可通过____1____注解为过滤器添加初始化参数。",
+            "question": "使用 @WebFilter注解时，可通过________注解为过滤器添加初始化参数。",
             "options": null,
             "answer": ["@WebInitParam"],
             "type": "fill",
@@ -7113,7 +7702,7 @@ const SUBJECTS = {
         },
         {
             "id": 156,
-            "question": "在doFilter()方法中，调用____1____方法会执行下一个过滤器或请求目标程序。",
+            "question": "在doFilter()方法中，调用________方法会执行下一个过滤器或请求目标程序。",
             "options": null,
             "answer": ["chain.doFilter(req, resp)"],
             "type": "fill",
@@ -7121,7 +7710,7 @@ const SUBJECTS = {
         },
         {
             "id": 157,
-            "question": "字符编码过滤器的核心功能是通过request对象调用____1____方法设置统一字符编码。",
+            "question": "字符编码过滤器的核心功能是通过request对象调用________方法设置统一字符编码。",
             "options": null,
             "answer": ["setCharacterEncoding(String code)"],
             "type": "fill",

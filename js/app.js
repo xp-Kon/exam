@@ -11,7 +11,7 @@ const state = {
 };
 const $ = id => document.getElementById(id), main = $('mainContent');
 const LABELS = ['A','B','C','D'];
-const FILL_RE = /_{2,}|（\s*）|\(\s*\)/g;  // 匹配填空占位符
+const FILL_RE = /_{2,}(?:\d+_{2,})*/g;  // 匹配填空占位符（含 ____1____ 格式）
 const PER_PAGE = 15;
 let currentRoute = 'dashboard';
 
@@ -19,7 +19,7 @@ let currentRoute = 'dashboard';
 function shuffle(a) { const r=[...a]; for(let i=r.length-1;i>0;i--){const j=Math.random()*i|0;[r[i],r[j]]=[r[j],r[i]]} return r; }
 function qLabel(q) { return q.type==='fill'?'填空题':q.type==='single'?'单选题':'多选题'; }
 function answerText(q) { return q.answer.join(''); }
-function isCorrect(q,chosen) { const c=[...chosen].sort(),a=[...q.answer].sort(); return c.length===a.length&&c.every((v,i)=>v===a[i]); }
+function isCorrect(q,chosen) { const c=[...chosen].map(v=>v.toLowerCase()).sort(),a=[...q.answer].map(v=>v.toLowerCase()).sort(); return c.length===a.length&&c.every((v,i)=>v===a[i]); }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function shuffleQuestion(q) {
   if(!q.options) return q;
@@ -118,15 +118,12 @@ function renderQuestion(q,opts={}) {
   let optionsHTML='';
   let submitBtnHTML='';
   if(q.type==='fill'){
-    const blanks=q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`).join('');
-    // 将 ______ / （ ） / ( ) 替换为输入框（先转义题干防 HTML 注入）
+    // 将 ______（含 ____1____ 格式）替换为输入框（先转义题干防 HTML 注入）
     const safeQ=esc(q.question);
     let bi=0;
     optionsHTML=safeQ.replace(FILL_RE,()=>{
-      const inp=q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`);
-      if(q.answer.length===1) return inp[0];
-      if(bi===0){bi++;return inp.join(' ');}
-      return '';
+      const i=bi<q.answer.length?bi++:q.answer.length-1;
+      return `<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`;
     });
     if(!FILL_RE.test(q.question)){
       optionsHTML=safeQ+'<div style="margin-top:12px">'+q.answer.map((_,i)=>`<input type="text" class="fill-input${showAnswer?' disabled':''}" data-blank="${i}" placeholder="第${i+1}空" autocomplete="off" spellcheck="false"/>`).join(' ')+'</div>';
@@ -140,7 +137,7 @@ function renderQuestion(q,opts={}) {
         // ponytail: 按 data-id 限定范围，防多题场景互相覆盖
         document.querySelectorAll(`[data-id="${q.id}"] .fill-input`).forEach((inp,i)=>{
           if(chosen&&chosen[i])inp.value=chosen[i];
-          inp.classList.add(chosen&&isCorrect(q,chosen)?'correct':'wrong');
+          inp.classList.add(chosen?(isCorrect(q,chosen)?'correct':'wrong'):'');
         });
       },0);
     }
