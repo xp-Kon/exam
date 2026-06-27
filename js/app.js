@@ -372,20 +372,14 @@ function renderBrowse() {
     );
   }
 
-  // ponytail: 每次渲染都打乱题目顺序，避免固定顺序暴露题目规律
-  const shuffledFiltered = shuffle(filtered);
-  const currentId = shuffledFiltered[0]?.id;
-
-  if (!state.browsePageIds || state.browsePageIds.length !== shuffledFiltered.length ||
+  // ponytail: 只在首次或筛选条件变化时洗牌，避免每次渲染都打乱顺序
+  if (!state.browsePageIds || state.browsePageIds.length !== filtered.length ||
       state.currentFilter !== state.currentFilterCache ||
       window.__browseTypeFilter !== state.currentTypeFilter) {
-    state.browsePageIds = shuffledFiltered.map(x => x.id);
-    state.browseCurrentId = currentId || null;
+    state.browsePageIds = shuffle(filtered).map(x => x.id); // 只在需要时洗牌
+    state.browseCurrentId = state.browsePageIds[0] || null;
     state.currentFilterCache = state.currentFilter;
     state.currentTypeFilter = window.__browseTypeFilter;
-  } else if (currentId && currentId !== state.browseCurrentId) {
-    // 重新洗牌后当前题目变了
-    state.browseCurrentId = currentId;
   }
 
   const currentQ = state.browseCurrentId ? QUESTION_BANK.find(x => x.id === state.browseCurrentId) : null;
