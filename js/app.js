@@ -372,13 +372,20 @@ function renderBrowse() {
     );
   }
 
-  if (!state.browsePageIds || state.browsePageIds.length !== filtered.length ||
+  // ponytail: 每次渲染都打乱题目顺序，避免固定顺序暴露题目规律
+  const shuffledFiltered = shuffle(filtered);
+  const currentId = shuffledFiltered[0]?.id;
+
+  if (!state.browsePageIds || state.browsePageIds.length !== shuffledFiltered.length ||
       state.currentFilter !== state.currentFilterCache ||
       window.__browseTypeFilter !== state.currentTypeFilter) {
-    state.browsePageIds = filtered.map(x => x.id);
-    state.browseCurrentId = filtered[0] ? filtered[0].id : null;
+    state.browsePageIds = shuffledFiltered.map(x => x.id);
+    state.browseCurrentId = currentId || null;
     state.currentFilterCache = state.currentFilter;
     state.currentTypeFilter = window.__browseTypeFilter;
+  } else if (currentId && currentId !== state.browseCurrentId) {
+    // 重新洗牌后当前题目变了
+    state.browseCurrentId = currentId;
   }
 
   const currentQ = state.browseCurrentId ? QUESTION_BANK.find(x => x.id === state.browseCurrentId) : null;
