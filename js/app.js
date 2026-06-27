@@ -97,10 +97,10 @@ window.__switchSubject = (key) => {
 };
 
 // ponytail: 更新页面标题随科目变化
-function updatePageTitle() {
+const updatePageTitle = () => {
   const brandText = document.querySelector('.nav-brand span');
   if(brandText) brandText.textContent = SUBJECTS[currentSubject]?.name || '马克思复习题';
-}
+};
 
 // ========== ROUTING ==========
 function handleRoute() {
@@ -383,8 +383,9 @@ function renderBrowse() {
 
   const currentQ = state.browseCurrentId ? QUESTION_BANK.find(x => x.id === state.browseCurrentId) : null;
 
-  // 空状态处理
-  if (!currentQ || filtered.length === 0) {
+  // ponytail: 空状态条件渲染，避免单独返回
+  const isEmpty = !currentQ || filtered.length === 0;
+  if (isEmpty) {
     const typeLabel = window.__browseTypeFilter === 'all' ? '' : TYPE_MAP[window.__browseTypeFilter].l + '型';
     main.innerHTML = `<div class="fade-in" style="text-align:center;padding:60px 20px">
       <i class="fas fa-search" style="font-size:3rem;color:var(--text-secondary);margin-bottom:16px"></i>
@@ -424,43 +425,34 @@ function renderBrowse() {
 
   main.innerHTML = buildBrowseHTML(currentQ, idx, hasPrev, hasNext, allTypeBtn + typeFilters, clearBtn);
 
-  // 绑定筛选按钮事件
+  // 绑定筛选按钮事件 — ponytail: 区分全题型和其他题型的行为
   document.querySelectorAll('.type-filter-btn').forEach(btn => {
     if (!btn.disabled) {
       btn.onclick = () => {
         window.__browseTypeFilter = btn.dataset.type;
-        renderBrowse();
-      };
-    } else if (btn.dataset.type === 'all') {
-      // 全题型按钮始终可点击
-      btn.onclick = () => {
-        window.__browseTypeFilter = 'all';
-        state.currentFilter = '';
+        // 只有"全题型"按钮才清除搜索，其他题型保留搜索文字
+        if (btn.dataset.type === 'all') {
+          state.currentFilter = '';
+        }
         renderBrowse();
       };
     }
   });
 
-  // 绑定搜索框：失焦或回车时搜索，避免输入过程中重绘导致键盘关闭
+  // 绑定搜索框：失焦或回车时搜索
   const inp = $('browseSearch');
   if (inp && !inp._browseBound) {
     inp._browseBound = true;
-    inp.onblur = () => {
+    const doSearch = () => {
       if (inp.value !== state.currentFilter) {
         state.currentFilter = inp.value;
         state.browsePage = 1;
         renderBrowse();
       }
     };
+    inp.onblur = doSearch;
     inp.onkeydown = (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        if (inp.value !== state.currentFilter) {
-          state.currentFilter = inp.value;
-          state.browsePage = 1;
-          renderBrowse();
-        }
-      }
+      if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
     };
   }
 }
@@ -483,21 +475,7 @@ function buildBrowseHTML(currentQ, idx, hasPrev, hasNext, typeFilters, clearBtn)
 }
 
 // ponytail: 清除所有筛选条件（题型 + 搜索）
-window.resetBrowseFilters = () => {
-  window.__browseTypeFilter = 'all';
-  state.currentFilter = '';
-  renderBrowse();
-};
-
-// ponytail: 光标位置保存/恢复工具函数
-function saveCaretPosition(input) {
-  return { value: input.value, start: input.selectionStart, end: input.selectionEnd };
-}
-function restoreCaretPosition(input, pos) {
-  if (!pos) return;
-  input.value = pos.value;
-  input.setSelectionRange(pos.start, pos.end);
-}
+window.resetBrowseFilters = () => { window.__browseTypeFilter = 'all'; state.currentFilter = ''; renderBrowse(); };
 
 function navBrowse(dir) {
   const newIdx = state.browsePageIds.indexOf(state.browseCurrentId) + dir;
