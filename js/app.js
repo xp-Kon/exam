@@ -93,7 +93,14 @@ window.__switchSubject = (key) => {
   const qc = document.querySelector('.q-count');
   if(qc) qc.textContent = `共 ${QUESTION_BANK.length} 题`;
   showToast(`已切换到 ${SUBJECTS[key].name}`, 'success');
+  updatePageTitle();
 };
+
+// ponytail: 更新页面标题随科目变化
+function updatePageTitle() {
+  const brandText = document.querySelector('.nav-brand span');
+  if(brandText) brandText.textContent = SUBJECTS[currentSubject]?.name || '马克思复习题';
+}
 
 // ========== ROUTING ==========
 function handleRoute() {
@@ -105,6 +112,7 @@ function handleRoute() {
   const s=Store.getStats();
   $('progressDisplay').innerHTML=`<i class="fas fa-chart-line"></i> ${s.totalQuestions?Math.round(s.totalDone/s.totalQuestions*100):0}% (${s.totalDone}/${s.totalQuestions})`;
   main.scrollTop=0;
+  updatePageTitle();
 }
 
 // ========== NAVIGATION (MERGED) ==========
@@ -343,30 +351,126 @@ function renderDashboard() {
 }
 
 // ========== PAGE: BROWSE ==========
-function renderBrowse() {
-  const q = state.currentFilter.toLowerCase();
-  const filtered = q ? QUESTION_BANK.filter(x => x.question.toLowerCase().includes(q) || Object.values(x.options || {}).some(v => v.toLowerCase().includes(q))) : QUESTION_BANK;
 
-  if (!state.browsePageIds || state.browsePageIds.length !== filtered.length || state.currentFilter !== state.currentFilterCache) {
-    state.browsePageIds = filtered.map(x => x.id);
-    state.browseCurrentId = state.browsePageIds[0];
-    state.currentFilterCache = state.currentFilter;
+function renderBrowse() {
+  // ponytail: 题型筛选状态持久化，不随科目切换重置
+  if (!window.__browseTypeFilter) window.__browseTypeFilter = 'all';
+
+  const q = state.currentFilter.toLowerCase();
+  let filtered = QUESTION_BANK;
+
+  // 按题型过滤
+  if (window.__browseTypeFilter !== 'all') {
+    filtered = getQuestionsByType(window.__browseTypeFilter);
   }
 
-  const currentQ = QUESTION_BANK.find(x => x.id === state.browseCurrentId);
-  if (!currentQ) {
-    main.innerHTML = `<div class="fade-in" style="text-align:center;padding:60px 20px"><i class="fas fa-search"></i><h3>未找到匹配题目</h3><p>试试其他关键词</p></div>`;
+  // 再按关键词过滤
+  if (q) {
+    filtered = filtered.filter(x =>
+      x.question.toLowerCase().includes(q) ||
+      Object.values(x.options || {}).some(v => v.toLowerCase().includes(q))
+    );
+  }
+
+  if (!state.browsePageIds || state.browsePageIds.length !== filtered.length ||
+      state.currentFilter !== state.currentFilterCache ||
+      window.__browseTypeFilter !== state.currentTypeFilter) {
+    state.browsePageIds = filtered.map(x => x.id);
+    state.browseCurrentId = filtered[0] ? filtered[0].id : null;
+    state.currentFilterCache = state.currentFilter;
+    state.currentTypeFilter = window.__browseTypeFilter;
+  }
+
+  const currentQ = state.browseCurrentId ? QUESTION_BANK.find(x => x.id === state.browseCurrentId) : null;
+
+  // 空状态处理
+  if (!currentQ || filtered.length === 0) {
+    const typeLabel = window.__browseTypeFilter === 'all' ? '' : TYPE_MAP[window.__browseTypeFilter].l + '型';
+    main.innerHTML = `<div class="fade-in" style="text-align:center;padding:60px 20px">
+      <i class="fas fa-search" style="font-size:3rem;color:var(--text-secondary);margin-bottom:16px"></i>
+      <h3>未找到${typeLabel}题目</h3>
+      <p style="color:var(--text-secondary);margin-bottom:20px">${filtered.length === 0 ? '当前科目暂无该题型题目' : '试试其他关键词或筛选条件'}</p>
+      <button class="btn btn-primary" onclick="resetBrowseFilters()">
+        <i class="fas fa-times"></i> 清除筛选
+      </button>
+    </div>`;
     return;
   }
+
+  // 有结果时，如果当前有筛选条件，显示清除按钮
+  const clearBtn = window.__browseTypeFilter !== 'all' || state.currentFilter
+    ? `<button class="btn btn-secondary btn-sm" onclick="resetBrowseFilters()" title="清除所有筛选">
+        <i class="fas fa-times"></i> 清除
+      </button>`
+    : '';
 
   const idx = state.browsePageIds.indexOf(state.browseCurrentId);
   const hasPrev = idx > 0;
   const hasNext = idx < state.browsePageIds.length - 1;
 
-  main.innerHTML = `<div class="fade-in">
+  // 全题型筛选按钮
+  const allTypeBtn = `<button class="btn btn-sm type-filter-btn ${window.__browseTypeFilter === 'all' ? 'active' : ''}" data-type="all">
+    <i class="fas fa-list"></i> 全题型
+  </button>`;
+
+  // 题型筛选按钮（带禁用状态）
+  const typeFilters = ['single', 'multiple', 'fill', 'tf'].map(t => {
+    const label = TYPE_MAP[t].l;
+    const active = window.__browseTypeFilter === t ? 'active' : '';
+    const count = getQuestionsByType(t).length;
+    const disabled = count === 0 ? 'disabled title="暂无该题型题目"' : '';
+    return `<button class="btn btn-sm type-filter-btn ${active}" data-type="${t}" ${disabled}>${label}${count === 0 ? '(无)' : ''}</button>`;
+  }).join('');
+
+  main.innerHTML = buildBrowseHTML(currentQ, idx, hasPrev, hasNext, allTypeBtn + typeFilters, clearBtn);
+
+  // 绑定筛选按钮事件
+  document.querySelectorAll('.type-filter-btn').forEach(btn => {
+    if (!btn.disabled) {
+      btn.onclick = () => {
+        window.__browseTypeFilter = btn.dataset.type;
+        renderBrowse();
+      };
+    } else if (btn.dataset.type === 'all') {
+      // 全题型按钮始终可点击
+      btn.onclick = () => {
+        window.__browseTypeFilter = 'all';
+        state.currentFilter = '';
+        renderBrowse();
+      };
+    }
+  });
+
+  // 绑定搜索框：失焦或回车时搜索，避免输入过程中重绘导致键盘关闭
+  const inp = $('browseSearch');
+  if (inp && !inp._browseBound) {
+    inp._browseBound = true;
+    inp.onblur = () => {
+      if (inp.value !== state.currentFilter) {
+        state.currentFilter = inp.value;
+        state.browsePage = 1;
+        renderBrowse();
+      }
+    };
+    inp.onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (inp.value !== state.currentFilter) {
+          state.currentFilter = inp.value;
+          state.browsePage = 1;
+          renderBrowse();
+        }
+      }
+    };
+  }
+}
+
+function buildBrowseHTML(currentQ, idx, hasPrev, hasNext, typeFilters, clearBtn) {
+  return `<div class="fade-in">
     <div class="page-header"><h2 class="page-title"><i class="fas fa-search"></i>题库浏览</h2>
-      <div class="search-box"><i class="fas fa-search"></i><input type="text" id="browseSearch" placeholder="搜索题目关键词..." value="${state.currentFilter}"></div>
+      <div class="search-box"><i class="fas fa-search"></i><input type="text" id="browseSearch" placeholder="搜索题目关键词..." value="${esc(state.currentFilter)}"></div>
     </div>
+    <div class="mb-12" style="display:flex;gap:8px;flex-wrap:wrap">${typeFilters}${clearBtn}</div>
     <div class="flex-between mb-12" style="font-size:.85rem;color:var(--text-secondary)">
       <span>${idx + 1} / ${state.browsePageIds.length}</span>
       <div class="flex gap-8">
@@ -374,17 +478,25 @@ function renderBrowse() {
         <button class="btn btn-secondary btn-sm" onclick="navBrowse(1)" ${!hasNext ? 'disabled' : ''}>下一题 <i class="fas fa-chevron-right"></i></button>
       </div>
     </div>
-    ${renderQuestion(currentQ, { showAnswer: true, index: `#${currentQ.id}` })}
+    <div id="browseQuestion">${renderQuestion(currentQ, { showAnswer: true, index: `#${currentQ.id}` })}</div>
   </div>`;
+}
 
-  const inp = $('browseSearch');
-  if (inp) {
-    inp.oninput = () => {
-      state.currentFilter = inp.value;
-      state.browsePage = 1;
-      renderBrowse();
-    };
-  }
+// ponytail: 清除所有筛选条件（题型 + 搜索）
+window.resetBrowseFilters = () => {
+  window.__browseTypeFilter = 'all';
+  state.currentFilter = '';
+  renderBrowse();
+};
+
+// ponytail: 光标位置保存/恢复工具函数
+function saveCaretPosition(input) {
+  return { value: input.value, start: input.selectionStart, end: input.selectionEnd };
+}
+function restoreCaretPosition(input, pos) {
+  if (!pos) return;
+  input.value = pos.value;
+  input.setSelectionRange(pos.start, pos.end);
 }
 
 function navBrowse(dir) {

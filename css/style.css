@@ -396,6 +396,40 @@ body {
 .btn-icon { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: 50%; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
+/* 题型筛选按钮 */
+.type-filter-btn {
+  background: var(--bg-option);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+.type-filter-btn:hover:not(:disabled) {
+  background: var(--bg-option-hover);
+  color: var(--text-primary);
+}
+.type-filter-btn.active {
+  background: var(--accent-gradient);
+  color: white;
+  border-color: var(--accent);
+}
+.type-filter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  position: relative;
+}
+.type-filter-btn:disabled::after {
+  content: '(无)';
+  margin-left: 4px;
+  font-size: 0.75em;
+  opacity: 0.7;
+}
+
+/* 清除筛选按钮 */
+[type-filter-btn]:not(.active):hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* === Focus States (Accessibility) === */
 .btn:focus-visible,
 .nav-item:focus-visible,
