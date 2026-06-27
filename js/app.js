@@ -217,15 +217,16 @@ document.addEventListener('keydown',e=>{
     return;
   }
   if(e.target.tagName==='INPUT'&&e.target.id!=='browseSearch')return;
-  if(!['practice','random','exam'].concat(Object.keys(TYPE_MAP)).includes(currentRoute))return;
+  const routes=['practice','random','exam'].concat(Object.keys(TYPE_MAP));
+  if(!routes.includes(currentRoute)&&currentRoute!=='browse')return;
   const k=e.key.toUpperCase();
   if(['A','B','C','D'].includes(k)){
     const opts=main.querySelectorAll('.q-option.selectable');
     const t=[...opts].find(o=>o.dataset&&o.dataset.opt!==undefined?o.dataset.opt===k:o.textContent.trim().startsWith(k));
     if(t&&!t.classList.contains('selected')){t.click();return;}
   }
-  if(e.key==='ArrowLeft'){e.preventDefault();navQuestion(-1);}
-  if(e.key==='ArrowRight'){e.preventDefault();navQuestion(1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();if(currentRoute==='browse')navBrowse(-1);else navQuestion(-1);}
+  if(e.key==='ArrowRight'){e.preventDefault();if(currentRoute==='browse')navBrowse(1);else navQuestion(1);}
   if(k==='S'){const c=main.querySelector('.q-card:last-child .fav-btn');if(c)c.click();}
 });
 
@@ -233,11 +234,11 @@ document.addEventListener('keydown',e=>{
 (function(){
   let startX=0,startY=0,moved=false;
   main.addEventListener('touchstart',e=>{
-    if(!['practice','random'].concat(Object.keys(TYPE_MAP)).includes(currentRoute))return;
+    if(!['practice','random'].concat(Object.keys(TYPE_MAP)).includes(currentRoute)&&currentRoute!=='browse')return;
     const t=e.touches[0];startX=t.clientX;startY=t.clientY;moved=false;
   },{passive:true});
   main.addEventListener('touchmove',e=>{
-    if(!['practice','random'].concat(Object.keys(TYPE_MAP)).includes(currentRoute))return;
+    if(!['practice','random'].concat(Object.keys(TYPE_MAP)).includes(currentRoute)&&currentRoute!=='browse')return;
     const t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;
     if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>10)moved=true;
   },{passive:true});
@@ -245,8 +246,8 @@ document.addEventListener('keydown',e=>{
     if(!moved)return;
     const dx=e.changedTouches[0].clientX-startX;
     if(Math.abs(dx)<50)return;
-    if(dx<0)navQuestion(1);  // 左滑下一题
-    else navQuestion(-1);     // 右滑上一题
+    if(dx<0){if(currentRoute==='browse')navBrowse(1);else navQuestion(1);}  // 左滑下一题
+    else {if(currentRoute==='browse')navBrowse(-1);else navQuestion(-1);}     // 右滑上一题
   });
 })();
 
@@ -335,42 +336,55 @@ function renderDashboard() {
 
 // ========== PAGE: BROWSE ==========
 function renderBrowse() {
-  const q=state.currentFilter.toLowerCase();
-  const filtered=q?QUESTION_BANK.filter(x=>x.question.toLowerCase().includes(q)||Object.values(x.options||{}).some(v=>v.toLowerCase().includes(q))):QUESTION_BANK;
-  const pages=Math.ceil(filtered.length/PER_PAGE),page=Math.min(state.browsePage,pages||1),start=(page-1)*PER_PAGE;
-  const items=filtered.slice(start,start+PER_PAGE);
+  const q = state.currentFilter.toLowerCase();
+  const filtered = q ? QUESTION_BANK.filter(x => x.question.toLowerCase().includes(q) || Object.values(x.options || {}).some(v => v.toLowerCase().includes(q))) : QUESTION_BANK;
 
-  main.innerHTML=`<div class="fade-in">
-    <div class="page-header"><h2 class="page-title"><i class="fas fa-list"></i>题库浏览</h2>
+  if (!state.browsePageIds || state.browsePageIds.length !== filtered.length || state.currentFilter !== state.currentFilterCache) {
+    state.browsePageIds = filtered.map(x => x.id);
+    state.browseCurrentId = state.browsePageIds[0];
+    state.currentFilterCache = state.currentFilter;
+  }
+
+  const currentQ = QUESTION_BANK.find(x => x.id === state.browseCurrentId);
+  if (!currentQ) {
+    main.innerHTML = `<div class="fade-in" style="text-align:center;padding:60px 20px"><i class="fas fa-search"></i><h3>未找到匹配题目</h3><p>试试其他关键词</p></div>`;
+    return;
+  }
+
+  const idx = state.browsePageIds.indexOf(state.browseCurrentId);
+  const hasPrev = idx > 0;
+  const hasNext = idx < state.browsePageIds.length - 1;
+
+  main.innerHTML = `<div class="fade-in">
+    <div class="page-header"><h2 class="page-title"><i class="fas fa-search"></i>题库浏览</h2>
       <div class="search-box"><i class="fas fa-search"></i><input type="text" id="browseSearch" placeholder="搜索题目关键词..." value="${state.currentFilter}"></div>
     </div>
-    <div style="margin-bottom:12px;color:var(--text-secondary);font-size:.85rem">共 ${filtered.length} 题 · 第 ${page}/${pages} 页</div>
-    ${items.length?items.map(x=>{
-      const r=Store.getQuestionResult(x.id);
-      return `<div class="q-card" data-id="${x.id}">
-        <div class="q-header"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span class="q-number">#${x.id}</span><span class="q-type-badge ${x.type}">${qLabel(x)}</span>
-          ${r==='correct'?'<i class="fas fa-check-circle" style="color:var(--green);margin-left:6px"></i>':r==='wrong'?'<i class="fas fa-times-circle" style="color:var(--accent);margin-left:6px"></i>':''}
-        </div><button class="icon-btn-sm fav-btn ${Store.isFavorite(x.id)?'active':''}" data-fav="${x.id}"><i class="fa${Store.isFavorite(x.id)?'s':'r'} fa-star"></i></button></div>
-        <div class="q-text">${esc(x.question)}</div>
-        <div class="q-options" style="margin-bottom:12px">
-          ${LABELS.map(l=>x.options&&x.options[l]?`<div class="q-option disabled"><span class="q-option-label">${l}</span><span class="q-option-text">${esc(x.options[l])}</span></div>`:'').join('')}
-        </div>
-        <details style="cursor:pointer"><summary style="color:var(--blue);font-weight:600;font-size:.9rem"><i class="fas fa-eye"></i> 查看答案</summary>
-          <div style="margin-top:10px;padding:10px 14px;background:rgba(21,101,192,.06);border:1px solid rgba(21,101,192,.15);border-radius:var(--radius-sm);color:var(--blue);font-weight:600">
-            <i class="fas fa-check-circle"></i> 正确答案：${esc(answerText(x))}</div></details>
-      </div>`;}).join(''):'<div class="empty-state"><i class="fas fa-search"></i><h3>未找到匹配题目</h3><p>试试其他关键词</p></div>'}
-    ${pages>1?`<div class="pagination">
-      <button class="page-btn" data-page="${page-1}" ${page<=1?'disabled':''}><i class="fas fa-chevron-left"></i></button>
-      ${Array.from({length:Math.min(pages,8)},(_,i)=>{
-        let p;if(pages<=8)p=i+1;else if(page<=4)p=i+1;else if(page>=pages-3)p=pages-7+i;else p=page-3+i;
-        return `<button class="page-btn ${p===page?'active':''}" data-page="${p}">${p}</button>`;
-      }).join('')}
-      <button class="page-btn" data-page="${page+1}" ${page>=pages?'disabled':''}><i class="fas fa-chevron-right"></i></button>
-    </div>`:''}
+    <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--text-secondary);margin-bottom:12px">
+      <span>${idx + 1} / ${state.browsePageIds.length}</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="navBrowse(-1)" ${!hasPrev ? 'disabled' : ''}><i class="fas fa-chevron-left"></i> 上一题</button>
+        <button class="btn btn-secondary btn-sm" onclick="navBrowse(1)" ${!hasNext ? 'disabled' : ''}>下一题 <i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+    ${renderQuestion(currentQ, { showAnswer: true, index: `#${currentQ.id}` })}
   </div>`;
-  const inp=$('browseSearch');
-  if(inp){inp.oninput=()=>{state.currentFilter=inp.value;state.browsePage=1;renderBrowse();}}
+
+  const inp = $('browseSearch');
+  if (inp) {
+    inp.oninput = () => {
+      state.currentFilter = inp.value;
+      state.browsePage = 1;
+      renderBrowse();
+    };
+  }
+}
+
+function navBrowse(dir) {
+  const newIdx = state.browsePageIds.indexOf(state.browseCurrentId) + dir;
+  if (newIdx >= 0 && newIdx < state.browsePageIds.length) {
+    state.browseCurrentId = state.browsePageIds[newIdx];
+    renderBrowse();
+  }
 }
 
 // ========== PAGE: PRACTICE ==========
