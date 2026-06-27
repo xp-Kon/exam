@@ -55,8 +55,24 @@ function bindPracticeHandlers(areaId,fbId,label,afterReveal) {
 function showModal(title,body,onConfirm) {
   $('modalTitle').textContent=title; $('modalBody').textContent=body;
   $('confirmModal').classList.remove('hidden');
-  $('modalConfirm').onclick=()=>{ $('confirmModal').classList.add('hidden'); if(onConfirm)onConfirm(); };
-  $('modalCancel').onclick=()=>$('confirmModal').classList.add('hidden');
+  const close=()=>{ $('confirmModal').classList.add('hidden'); cleanup(); };
+  const cleanup=()=>{ document.removeEventListener('keydown',onKey); $('confirmModal').removeEventListener('click',onBg); };
+  const onKey=e=>{ if(e.key==='Escape')close(); };
+  const onBg=e=>{ if(e.target===$('confirmModal'))close(); };
+  document.addEventListener('keydown',onKey);
+  $('confirmModal').addEventListener('click',onBg);
+  $('modalConfirm').onclick=()=>{ close(); if(onConfirm)onConfirm(); };
+  $('modalCancel').onclick=close;
+}
+function showToast(message,type='info') {
+  const container=$('toastContainer');
+  if(!container)return;
+  const icons={success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle'};
+  const toast=document.createElement('div');
+  toast.className=`toast toast-${type}`;
+  toast.innerHTML=`<i class="fas ${icons[type]||icons.info}"></i><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(()=>{ toast.classList.add('fade-out'); setTimeout(()=>toast.remove(),300); },3000);
 }
 function navigate(name) { location.hash=name; }
 
@@ -76,6 +92,7 @@ window.__switchSubject = (key) => {
   if(sel) sel.value = key;
   const qc = document.querySelector('.q-count');
   if(qc) qc.textContent = `共 ${QUESTION_BANK.length} 题`;
+  showToast(`已切换到 ${SUBJECTS[key].name}`, 'success');
 };
 
 // ========== ROUTING ==========
@@ -87,6 +104,7 @@ function handleRoute() {
   ({dashboard:renderDashboard,browse:renderBrowse,practice:renderPractice,random:renderRandom,exam:renderExam,errors:renderErrors,favorites:renderFavorites,...Object.fromEntries(Object.keys(TYPE_MAP).map(k=>[k,renderTypePractice]))}[name]||renderDashboard)();
   const s=Store.getStats();
   $('progressDisplay').innerHTML=`<i class="fas fa-chart-line"></i> ${s.totalQuestions?Math.round(s.totalDone/s.totalQuestions*100):0}% (${s.totalDone}/${s.totalQuestions})`;
+  main.scrollTop=0;
 }
 
 // ========== NAVIGATION (MERGED) ==========
@@ -171,11 +189,11 @@ function renderQuestion(q,opts={}) {
       正确答案：${q.answer.map(a=>esc(a)).join('；')}</div>`:'';
   return `<div class="${cardClass}" data-id="${q.id}">
     <div class="q-header">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div class="q-header-meta">
         <span class="q-number">${index||'#'+q.id}</span>
         <span class="q-type-badge ${q.type}">${qLabel(q)}</span>${sourceTag}
       </div>
-      <div style="display:flex;gap:6px">
+      <div class="q-header-actions">
         <button class="icon-btn-sm fav-btn ${fav?'active':''}" data-fav="${q.id}" title="收藏">
           <i class="fa${fav?'s':'r'} fa-star"></i>
         </button>
@@ -188,17 +206,7 @@ function renderQuestion(q,opts={}) {
   </div>`;
 }
 
-// Dynamic style
-(function(){const s=document.createElement('style');s.textContent=`
-.icon-btn-sm{background:none;border:none;color:var(--text-secondary);width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--transition);font-size:.9rem}
-.icon-btn-sm:hover{background:var(--bg-hover);color:var(--accent)}
-.icon-btn-sm.active{color:var(--gold)}
-.q-option.selectable{cursor:pointer}
-.q-option.selectable:hover{background:var(--bg-option-hover)}
-.empty-row{text-align:center;padding:40px;color:var(--text-secondary)}
-.exam-progress{margin-bottom:16px}
-.exam-progress .info{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px;color:var(--text-secondary)}
-`;document.head.appendChild(s)})();
+// Dynamic style — moved to css/style.css
 
 // ========== CLICK DELEGATION ==========
 main.addEventListener('click',e=>{
@@ -276,23 +284,23 @@ function handleFillSubmit(areaId, feedbackId, q, nextLabel) {
     正确答案：${q.answer.map(a=>esc(a)).join('；')}</div>`;
   area.querySelector('.q-card').insertAdjacentHTML('beforeend', revealHTML);
   const fb = $(feedbackId);
-  if(fb) fb.innerHTML=`<div style="text-align:center;padding:12px;background:${ok?'var(--bg-correct)':'var(--bg-wrong)'};border-radius:var(--radius-sm)">
-    <strong style="color:${ok?'var(--green)':'var(--accent)'}"><i class="fas ${ok?'fa-check-circle':'fa-times-circle'}"></i> ${ok?'回答正确！':'回答错误'}</strong>
-    <span style="margin-left:12px"><button class="btn btn-primary btn-sm" onclick="navQuestion(1)">下一题 <i class="fas fa-chevron-right"></i></button></span>
-  </div>`;
+  if(fb) fb.innerHTML=buildFeedbackHTML(ok);
 }
 
 // ========== ANSWER REVEAL HELPERS (SHARED) ==========
+function buildFeedbackHTML(ok) {
+  return `<div class="feedback-bar ${ok?'correct':'wrong'}">
+    <strong class="${ok?'correct-text':'wrong-text'}"><i class="fas ${ok?'fa-check-circle':'fa-times-circle'}"></i> ${ok?'回答正确！':'回答错误'}</strong>
+    <span style="margin-left:12px"><button class="btn btn-primary btn-sm" onclick="navQuestion(1)">下一题 <i class="fas fa-chevron-right"></i></button></span>
+  </div>`;
+}
 function revealAnswer(areaId,feedbackId,q,chosen,nextLabel) {
   const area=$(areaId);if(!area)return;
   const ok=isCorrect(q,chosen);
   ok?Store.addCorrect(q.id):Store.addError(q.id);
   area.innerHTML=renderQuestion(q,{showAnswer:true,chosen,index:nextLabel});
   const fb=$(feedbackId);
-  if(fb)fb.innerHTML=`<div style="text-align:center;padding:12px;background:${ok?'var(--bg-correct)':'var(--bg-wrong)'};border-radius:var(--radius-sm)">
-    <strong style="color:${ok?'var(--green)':'var(--accent)'}"><i class="fas ${ok?'fa-check-circle':'fa-times-circle'}"></i> ${ok?'回答正确！':'回答错误'}</strong>
-    <span style="margin-left:12px"><button class="btn btn-primary btn-sm" onclick="navQuestion(1)">下一题 <i class="fas fa-chevron-right"></i></button></span>
-  </div>`;
+  if(fb) fb.innerHTML=buildFeedbackHTML(ok);
 }
 
 // ========== PAGE: DASHBOARD ==========
@@ -306,7 +314,7 @@ function renderDashboard() {
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks" style="color:var(--blue)"></i></div>
         <div class="stat-value">${s.totalDone}</div><div class="stat-label">已练习 / ${s.totalQuestions} 题</div>
-        <div class="progress-bar" style="margin-top:10px"><div class="progress-fill" style="width:${s.totalQuestions?Math.round(s.totalDone/s.totalQuestions*100):0}%"></div></div></div>
+        <div class="progress-bar mt-12"><div class="progress-fill" style="width:${s.totalQuestions?Math.round(s.totalDone/s.totalQuestions*100):0}%"></div></div></div>
       <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="color:var(--green)"></i></div>
         <div class="stat-value">${s.accuracy}%</div><div class="stat-label">正确率</div></div>
       <div class="stat-card"><div class="stat-icon"><i class="fas fa-exclamation-circle" style="color:var(--accent)"></i></div>
@@ -314,17 +322,17 @@ function renderDashboard() {
       <div class="stat-card"><div class="stat-icon"><i class="fas fa-star" style="color:var(--gold)"></i></div>
         <div class="stat-value">${s.favCount}</div><div class="stat-label">收藏题目</div></div>
     </div>
-    <div class="card"><h3 style="margin-bottom:12px"><i class="fas fa-fire" style="color:var(--accent)"></i> 高频错题 TOP 5</h3>
+    <div class="card"><h3 class="mb-12"><i class="fas fa-fire" style="color:var(--accent)"></i> 高频错题 TOP 5</h3>
       ${top.length?top.map((x,i)=>`
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-light)">
+        <div class="flex-between gap-12" style="padding:8px 0;border-bottom:1px solid var(--border-light)">
           <span style="font-weight:700;color:var(--accent);min-width:24px">#${i+1}</span>
           <span class="q-number" style="background:var(--accent);padding:1px 8px;font-size:.75rem">${x.id}</span>
           <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem">${x.q.question.slice(0,60)}...</span>
-          <span style="background:var(--bg-wrong);color:var(--accent);padding:2px 10px;border-radius:10px;font-weight:600;font-size:.8rem">错 ${x.count} 次</span>
+          <span class="error-badge">错 ${x.count} 次</span>
         </div>`).join(''):'<div class="empty-row"><i class="fas fa-smile"></i><br>暂无错题，继续保持！</div>'}
     </div>
-    <div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px"><i class="fas fa-lightbulb" style="color:var(--gold)"></i> 练习建议</h3>
-      <ul style="padding-left:20px;color:var(--text-secondary);line-height:2">
+    <div class="card mt-16"><h3 class="mb-12"><i class="fas fa-lightbulb" style="color:var(--gold)"></i> 练习建议</h3>
+      <ul class="practice-suggest">
         <li>${s.wrong>0?`你有 ${s.wrong} 道错题，建议前往 <a href="#errors" style="color:var(--accent)">错题本</a> 集中攻克`:'暂无错题，继续保持！'}</li>
         <li>${s.favCount>0?`已收藏 ${s.favCount} 道题，可前往 <a href="#favorites" style="color:var(--accent)">收藏夹</a> 重点复习`:'练习时可用 <i class="fas fa-star" style="color:var(--gold)"></i> 收藏重要题目'}</li>
         <li>${s.totalDone<s.totalQuestions?`剩余 ${s.totalQuestions-s.totalDone} 题未练习`:'恭喜！全部题目已练习过一遍'}</li>
@@ -359,9 +367,9 @@ function renderBrowse() {
     <div class="page-header"><h2 class="page-title"><i class="fas fa-search"></i>题库浏览</h2>
       <div class="search-box"><i class="fas fa-search"></i><input type="text" id="browseSearch" placeholder="搜索题目关键词..." value="${state.currentFilter}"></div>
     </div>
-    <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--text-secondary);margin-bottom:12px">
+    <div class="flex-between mb-12" style="font-size:.85rem;color:var(--text-secondary)">
       <span>${idx + 1} / ${state.browsePageIds.length}</span>
-      <div style="display:flex;gap:8px">
+      <div class="flex gap-8">
         <button class="btn btn-secondary btn-sm" onclick="navBrowse(-1)" ${!hasPrev ? 'disabled' : ''}><i class="fas fa-chevron-left"></i> 上一题</button>
         <button class="btn btn-secondary btn-sm" onclick="navBrowse(1)" ${!hasNext ? 'disabled' : ''}>下一题 <i class="fas fa-chevron-right"></i></button>
       </div>
@@ -400,11 +408,11 @@ function renderPractice() {
         <button class="btn btn-secondary btn-sm" onclick="navQuestion(-1)" ${state.practiceId<=1?'disabled':''}><i class="fas fa-chevron-left"></i> 上一题</button>
         <button class="btn btn-primary btn-sm" onclick="navQuestion(1)" ${state.practiceId>=QUESTION_BANK.length?'disabled':''}>下一题 <i class="fas fa-chevron-right"></i></button>
       </div></div>
-    <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-secondary);margin-bottom:16px">
+    <div class="progress-bar mb-4"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="flex-between mb-16" style="font-size:.8rem;color:var(--text-secondary)">
       <span>第 ${state.practiceId} / ${QUESTION_BANK.length} 题</span><span>${pct}%</span></div>
     <div id="practiceArea">${renderQuestion(q,{interactive:true,index:`第 ${state.practiceId} 题`})}</div>
-    <div id="practiceFeedback" style="margin-top:12px"></div>
+    <div id="practiceFeedback" class="mt-12"></div>
   </div>`;
 
   bindPracticeHandlers('practiceArea','practiceFeedback',`第 ${q.id} 题`,()=>Store.setPracticePos(state.practiceId));
@@ -429,12 +437,12 @@ function showRandomQuestion() {
   main.innerHTML=`<div class="fade-in">
     <div class="page-header"><h2 class="page-title"><i class="fas fa-random"></i>随机练习</h2>
       <div class="page-actions">
-        <span style="color:var(--text-secondary);font-size:.85rem;padding:6px 0">${state.randomIdx+1} / ${state.randomIds.length}</span>
+        <span class="nav-counter">${state.randomIdx+1} / ${state.randomIds.length}</span>
         <button class="btn btn-secondary btn-sm" onclick="navQuestion(-1)" ${state.randomIdx<=0?'disabled':''}><i class="fas fa-chevron-left"></i></button>
         <button class="btn btn-secondary btn-sm" onclick="navQuestion(1)"><i class="fas fa-chevron-right"></i></button>
       </div></div>
     <div id="randArea">${renderQuestion(q,{interactive:true,index:`随机 #${state.randomIdx+1}`})}</div>
-    <div id="randFeedback" style="margin-top:12px"></div>
+    <div id="randFeedback" class="mt-12"></div>
   </div>`;
 
   bindPracticeHandlers('randArea','randFeedback',`随机 #${state.randomIdx+1}`);
@@ -463,31 +471,31 @@ function renderTypePractice() {
   main.innerHTML=`<div class="fade-in">
     <div class="page-header"><h2 class="page-title"><i class="fas ${tm.i}"></i>${tm.l}</h2>
       <div class="page-actions">
-        <span style="color:var(--text-secondary);font-size:.85rem;padding:6px 0">${idx+1} / ${total}</span>
+        <span class="nav-counter">${idx+1} / ${total}</span>
         <button class="btn btn-secondary btn-sm" onclick="navQuestion(-1)" ${idx<=0?'disabled':''}><i class="fas fa-chevron-left"></i></button>
         <button class="btn btn-secondary btn-sm" onclick="navQuestion(1)"><i class="fas fa-chevron-right"></i></button>
       </div></div>
-    <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:${Math.round((idx+1)/total*100)}%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-secondary);margin-bottom:16px">
+    <div class="progress-bar mb-4"><div class="progress-fill" style="width:${Math.round((idx+1)/total*100)}%"></div></div>
+    <div class="flex-between mb-16" style="font-size:.8rem;color:var(--text-secondary)">
       <span>第 ${idx+1} / ${total} 题</span><span>${Math.round((idx+1)/total*100)}%</span></div>
     <div id="typeArea">${renderQuestion(q,{interactive:true,index:label})}</div>
-    <div id="typeFeedback" style="margin-top:12px"></div>
+    <div id="typeFeedback" class="mt-12"></div>
   </div>`;
   bindPracticeHandlers('typeArea','typeFeedback',label);
 }
 
 // ========== PAGE: EXAM ==========
 function renderExam() {
-  main.innerHTML=`<div class="fade-in" style="max-width:500px;margin:40px auto">
-    <div class="card" style="text-align:center;padding:40px">
+  main.innerHTML=`<div class="fade-in exam-setup">
+    <div class="card text-center p-40">
       <i class="fas fa-clipboard-check" style="font-size:3rem;color:var(--accent);margin-bottom:16px"></i>
-      <h2 style="margin-bottom:8px">模拟考试</h2>
-      <p style="color:var(--text-secondary);margin-bottom:24px">从题库中随机抽题，限时作答</p>
-      <div style="margin-bottom:20px"><label style="display:block;margin-bottom:8px;font-weight:600">题目数量</label>
-        <div style="display:flex;gap:8px;justify-content:center">${[10,20,40].map(n=>`<button class="btn ${n===20?'btn-primary':'btn-secondary'}" onclick="this.parentElement.querySelectorAll('.btn').forEach(b=>b.className='btn btn-secondary');this.className='btn btn-primary';window.__examCount=${n}">${n} 题</button>`).join('')}</div></div>
-      <div style="margin-bottom:20px"><label style="display:block;margin-bottom:8px;font-weight:600">时间限制</label>
-        <div style="display:flex;gap:8px;justify-content:center">${[{v:0,l:'不限'},{v:300,l:'5分钟'},{v:600,l:'10分钟'},{v:900,l:'15分钟'}].map(t=>`<button class="btn ${t.v===600?'btn-primary':'btn-secondary'}" onclick="this.parentElement.querySelectorAll('.btn').forEach(b=>b.className='btn btn-secondary');this.className='btn btn-primary';window.__examTime=${t.v}">${t.l}</button>`).join('')}</div></div>
-      <button class="btn btn-primary" style="margin-top:16px;padding:12px 40px" onclick="startExam(window.__examCount||20,window.__examTime||600)"><i class="fas fa-play"></i> 开始考试</button>
+      <h2 class="mb-12">模拟考试</h2>
+      <p class="text-secondary mb-16">从题库中随机抽题，限时作答</p>
+      <div class="mb-16"><label style="display:block;margin-bottom:8px;font-weight:600">题目数量</label>
+        <div class="exam-option-group">${[10,20,40].map(n=>`<button class="btn ${n===20?'btn-primary':'btn-secondary'}" onclick="this.parentElement.querySelectorAll('.btn').forEach(b=>b.className='btn btn-secondary');this.className='btn btn-primary';window.__examCount=${n}">${n} 题</button>`).join('')}</div></div>
+      <div class="mb-16"><label style="display:block;margin-bottom:8px;font-weight:600">时间限制</label>
+        <div class="exam-option-group">${[{v:0,l:'不限'},{v:300,l:'5分钟'},{v:600,l:'10分钟'},{v:900,l:'15分钟'}].map(t=>`<button class="btn ${t.v===600?'btn-primary':'btn-secondary'}" onclick="this.parentElement.querySelectorAll('.btn').forEach(b=>b.className='btn btn-secondary');this.className='btn btn-primary';window.__examTime=${t.v}">${t.l}</button>`).join('')}</div></div>
+      <button class="btn btn-primary mt-20" style="padding:12px 40px" onclick="startExam(window.__examCount||20,window.__examTime||600)"><i class="fas fa-play"></i> 开始考试</button>
     </div></div>`;
 }
 
@@ -514,17 +522,17 @@ function showExamQuestion(idx) {
 
   main.innerHTML=`<div class="fade-in">
     <div class="page-header"><h2 class="page-title"><i class="fas fa-clipboard-check"></i>模拟考试</h2>
-      <div style="display:flex;align-items:center;gap:12px">
+      <div class="flex-center gap-12">
         ${state.examTimeLeft>0?`<span id="examTimer" class="timer normal"><i class="far fa-clock"></i> <span>${Math.floor(state.examTimeLeft/60)}:${String(state.examTimeLeft%60).padStart(2,'0')}</span></span>`:''}
-        <span style="font-size:.9rem;color:var(--text-secondary)">${answered}/${total} 已答</span></div></div>
+        <span class="text-secondary" style="font-size:.9rem">${answered}/${total} 已答</span></div></div>
     <div class="exam-progress"><div class="info"><span>第 ${idx+1} 题</span><span>${idx+1}/${total}</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:${(idx+1)/total*100}%"></div></div></div>
     <div id="examArea">${renderQuestion(q,{interactive:true,chosen,index:`第 ${idx+1} 题`,noSubmit:q.type!=='fill'})}</div>
-    <div style="display:flex;justify-content:space-between;margin-top:16px">
+    <div class="flex-between mt-16">
       <button class="btn btn-secondary btn-sm" onclick="clearInterval(state.examTimer);showExamQuestion(${idx-1})" ${idx<=0?'disabled':''}><i class="fas fa-chevron-left"></i> 上一题</button>
       <button class="btn btn-secondary btn-sm" onclick="clearInterval(state.examTimer);showExamQuestion(${idx+1})">跳过 <i class="fas fa-forward"></i></button>
       <button class="btn btn-primary btn-sm" onclick="clearInterval(state.examTimer);showExamQuestion(${idx+1})" ${idx>=total-1?'disabled':''}>${idx<total-1?'下一题 <i class="fas fa-chevron-right"></i>':''}</button></div>
-    ${idx===total-1?`<div style="text-align:center;margin-top:16px"><button class="btn btn-success" onclick="clearInterval(state.examTimer);finishExam()"><i class="fas fa-check-double"></i> 交卷</button></div>`:''}
+    ${idx===total-1?`<div class="text-center mt-16"><button class="btn btn-success" onclick="clearInterval(state.examTimer);finishExam()"><i class="fas fa-check-double"></i> 交卷</button></div>`:''}
   </div>`;
 
   window.__optClick=(el,opt)=>{
@@ -561,10 +569,10 @@ function finishExam() {
       <div class="exam-details">
         <div class="exam-detail-item"><div class="label">正确</div><div class="value" style="color:var(--green)">${correct}</div></div>
         <div class="exam-detail-item"><div class="label">错误</div><div class="value" style="color:var(--accent)">${total-correct-unanswered}</div></div>
-        <div class="exam-detail-item"><div class="label">未答</div><div class="value" style="color:var(--text-muted)">${unanswered}</div></div></div></div>
-    <h3 style="margin-bottom:12px">逐题回顾</h3>
+        <div class="exam-detail-item"><div class="label">未答</div><div class="value text-muted">${unanswered}</div></div></div></div>
+    <h3 class="mb-12">逐题回顾</h3>
     ${results.map((r,i)=>renderQuestion(r.q,{showAnswer:true,chosen:r.chosen,index:`第 ${i+1} 题 ${r.ok?'✅':r.chosen?'❌':'⏭️'}`})).join('')}
-    <div style="text-align:center;margin-top:20px">
+    <div class="text-center mt-20">
       <button class="btn btn-primary" onclick="navigate('exam')"><i class="fas fa-redo"></i> 再来一次</button>
       <button class="btn btn-secondary" style="margin-left:8px" onclick="navigate('errors')"><i class="fas fa-exclamation-triangle"></i> 查看错题</button></div>
   </div>`;
@@ -580,7 +588,7 @@ function renderErrors() {
     <div class="page-header"><h2 class="page-title"><i class="fas fa-exclamation-triangle"></i>错题本</h2>
       <div class="page-actions">${questions.length?`<button class="btn btn-danger btn-sm" id="clearErrorsBtn"><i class="fas fa-trash"></i> 清空错题</button>
         <button class="btn btn-primary btn-sm" onclick="state.randomIds=shuffle(${JSON.stringify(ids)});state.randomIdx=0;navigate('random')"><i class="fas fa-play"></i> 练习错题</button>`:''}</div></div>
-    ${questions.length?questions.map(q=>renderQuestion(q,{showAnswer:true,index:`#${q.id} <span style="background:var(--bg-wrong);color:var(--accent);padding:0 8px;border-radius:8px;font-size:.75rem">错 ${errs[q.id]} 次</span>`})).join(''):'<div class="empty-state"><i class="fas fa-smile"></i><h3>暂无错题</h3><p>继续保持！</p></div>'}
+    ${questions.length?questions.map(q=>renderQuestion(q,{showAnswer:true,index:`#${q.id} <span class="error-badge">错 ${errs[q.id]} 次</span>`})).join(''):'<div class="empty-state"><i class="fas fa-smile"></i><h3>暂无错题</h3><p>继续保持！</p></div>'}
   </div>`;
   const cb=$('clearErrorsBtn');if(cb)cb.onclick=()=>showModal('清空错题','确定要清空所有错题记录吗？',()=>{Store.clearErrors();renderErrors();});
 }
@@ -606,15 +614,32 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('themeToggle').onclick=()=>{const n=Store.getTheme()==='dark'?'light':'dark';Store.setTheme(n);ti.className=n==='dark'?'fas fa-sun':'fas fa-moon';};
   $('sidebarToggle').onclick=()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');};
   $('overlay').onclick=()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');};
-  $('resetBtn').onclick=()=>showModal('重置数据','确定要重置所有练习记录、错题和收藏吗？此操作不可撤销。',()=>{Store.resetAll();navigate('dashboard');});
+  $('resetBtn').onclick=()=>showModal('重置数据','确定要重置所有练习记录、错题和收藏吗？此操作不可撤销。',()=>{Store.resetAll();navigate('dashboard');showToast('数据已重置','success');});
   // 初始化科目选择器
   const sel=$('subjectSelect');
   if(sel){sel.value=currentSubject;}
   const qc=document.querySelector('.q-count');
   if(qc){qc.textContent=`共 ${QUESTION_BANK.length} 题`;}
-  // Keyboard hint
-  const h=document.createElement('div');h.className='kbd-hint';
-  h.innerHTML='快捷键: <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> 选答案 · <kbd>←</kbd><kbd>→</kbd> 翻题 · <kbd>S</kbd> 收藏';
-  document.body.appendChild(h);
+
+  // Toast 容器（由 index.html 提供，此处做 fallback）
+  if(!$('toastContainer')){
+    const tc=document.createElement('div');tc.id='toastContainer';tc.className='toast-container';
+    document.body.appendChild(tc);
+  }
+
+  // 滚动回顶按钮
+  const stb=document.createElement('button');stb.className='scroll-top-btn';stb.innerHTML='<i class="fas fa-chevron-up"></i>';stb.title='回到顶部';
+  stb.onclick=()=>main.scrollTo({top:0,behavior:'smooth'});
+  document.body.appendChild(stb);
+  main.addEventListener('scroll',()=>{stb.classList.toggle('visible',main.scrollTop>300);});
+
+  // 键盘提示（可关闭，记忆状态）
+  if(!localStorage.getItem('mk_kbdHintClosed')){
+    const h=document.createElement('div');h.className='kbd-hint';
+    h.innerHTML='快捷键: <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> 选答案 · <kbd>←</kbd><kbd>→</kbd> 翻题 · <kbd>S</kbd> 收藏 <button class="kbd-hint-close" title="关闭">×</button>';
+    h.querySelector('.kbd-hint-close').onclick=()=>{h.remove();localStorage.setItem('mk_kbdHintClosed','1');};
+    document.body.appendChild(h);
+  }
+
   handleRoute();
 });

@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>复习题·练习工具</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -33,12 +32,14 @@
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
       <nav class="sidebar-nav">
+        <div class="nav-section-label">数据</div>
         <a href="#dashboard" class="nav-item active" data-route="dashboard">
           <i class="fas fa-chart-pie"></i><span>统计看板</span>
         </a>
         <a href="#browse" class="nav-item" data-route="browse">
           <i class="fas fa-search"></i><span>题库浏览</span>
         </a>
+        <div class="nav-section-label">练习</div>
         <a href="#practice" class="nav-item" data-route="practice">
           <i class="fas fa-play-circle"></i><span>顺序练习</span>
         </a>
@@ -60,6 +61,7 @@
         <a href="#exam" class="nav-item" data-route="exam">
           <i class="fas fa-clipboard-check"></i><span>模拟考试</span>
         </a>
+        <div class="nav-section-label">管理</div>
         <a href="#errors" class="nav-item" data-route="errors">
           <i class="fas fa-exclamation-triangle"></i><span>错题本</span>
         </a>
@@ -91,6 +93,9 @@
 
   <!-- Overlay for mobile sidebar -->
   <div id="overlay" class="overlay"></div>
+
+  <!-- Toast Notifications -->
+  <div id="toastContainer" class="toast-container"></div>
 
   <!-- Modals -->
   <div id="confirmModal" class="modal hidden">
