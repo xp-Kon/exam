@@ -51,8 +51,9 @@ const Store = {
   getStats() {
     const p = Store.getProgress(), e = Store.getErrorCounts(), f = Store.getFavorites();
     const total = Object.keys(p).length, correct = Object.values(p).filter(v=>v==='correct').length;
+    const wrongQuestionCount = Object.keys(e).length; // 错题本中的题目数量
     return {
-      totalDone: total, correct, wrong: total-correct,
+      totalDone: total, correct, wrong: wrongQuestionCount,
       accuracy: total ? Math.round(correct/total*100) : 0,
       errorCount: Object.values(e).reduce((a,b)=>a+b,0),
       favCount: Object.keys(f).length,
