@@ -420,7 +420,7 @@ function renderBrowse() {
     const active = window.__browseTypeFilter === t ? 'active' : '';
     const count = getQuestionsByType(t).length;
     const disabled = count === 0 ? 'disabled title="暂无该题型题目"' : '';
-    return `<button class="btn btn-sm type-filter-btn ${active}" data-type="${t}" ${disabled}>${label}${count === 0 ? '(无)' : ''}</button>`;
+    return `<button class="btn btn-sm type-filter-btn ${active}" data-type="${t}" ${disabled} title="${count === 0 ? '暂无该题型题目' : ''}">${label}</button>`;
   }).join('');
 
   main.innerHTML = buildBrowseHTML(currentQ, idx, hasPrev, hasNext, allTypeBtn + typeFilters, clearBtn);
@@ -470,7 +470,7 @@ function buildBrowseHTML(currentQ, idx, hasPrev, hasNext, typeFilters, clearBtn)
         <button class="btn btn-secondary btn-sm" onclick="navBrowse(1)" ${!hasNext ? 'disabled' : ''}>下一题 <i class="fas fa-chevron-right"></i></button>
       </div>
     </div>
-    <div id="browseQuestion">${renderQuestion(currentQ, { showAnswer: true, index: `#${currentQ.id}` })}</div>
+    <div id="browseQuestion">${renderQuestion(shuffleQuestion(currentQ), { showAnswer: true, index: `#${currentQ.id}` })}</div>
   </div>`;
 }
 
@@ -678,7 +678,7 @@ function renderErrors() {
     <div class="page-header"><h2 class="page-title"><i class="fas fa-exclamation-triangle"></i>错题本</h2>
       <div class="page-actions">${questions.length?`<button class="btn btn-danger btn-sm" id="clearErrorsBtn"><i class="fas fa-trash"></i> 清空错题</button>
         <button class="btn btn-primary btn-sm" onclick="state.randomIds=shuffle(${JSON.stringify(ids)});state.randomIdx=0;navigate('random')"><i class="fas fa-play"></i> 练习错题</button>`:''}</div></div>
-    ${questions.length?questions.map(q=>renderQuestion(q,{showAnswer:true,index:`#${q.id} <span class="error-badge">错 ${errs[q.id]} 次</span>`})).join(''):'<div class="empty-state"><i class="fas fa-smile"></i><h3>暂无错题</h3><p>继续保持！</p></div>'}
+    ${questions.length?questions.map(q=>renderQuestion(shuffleQuestion(q),{showAnswer:true,index:`#${q.id} <span class="error-badge">错 ${errs[q.id]} 次</span>`})).join(''):'<div class="empty-state"><i class="fas fa-smile"></i><h3>暂无错题</h3><p>继续保持！</p></div>'}
   </div>`;
   const cb=$('clearErrorsBtn');if(cb)cb.onclick=()=>showModal('清空错题','确定要清空所有错题记录吗？',()=>{Store.clearErrors();renderErrors();});
 }
@@ -691,7 +691,7 @@ function renderFavorites() {
   main.innerHTML=`<div class="fade-in">
     <div class="page-header"><h2 class="page-title"><i class="fas fa-star"></i>我的收藏</h2>
       <div class="page-actions">${questions.length?`<button class="btn btn-primary btn-sm" onclick="state.randomIds=shuffle(${JSON.stringify(ids)});state.randomIdx=0;navigate('random')"><i class="fas fa-play"></i> 练习收藏</button>`:''}</div></div>
-    ${questions.length?questions.map(q=>renderQuestion(q,{showAnswer:true,index:`#${q.id}`})).join(''):'<div class="empty-state"><i class="far fa-star"></i><h3>暂无收藏</h3><p>练习时点击 <i class="fas fa-star" style="color:var(--gold)"></i> 收藏重要题目</p></div>'}
+    ${questions.length?questions.map(q=>renderQuestion(shuffleQuestion(q),{showAnswer:true,index:`#${q.id}`})).join(''):'<div class="empty-state"><i class="far fa-star"></i><h3>暂无收藏</h3><p>练习时点击 <i class="fas fa-star" style="color:var(--gold)"></i> 收藏重要题目</p></div>'}
   </div>`;
 }
 
