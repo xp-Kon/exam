@@ -306,6 +306,9 @@ body {
   line-height: 1.7;
   color: var(--text-primary);
   margin-bottom: 16px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 /* Options */
