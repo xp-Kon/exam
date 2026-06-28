@@ -15,8 +15,9 @@ Usage:
 import re
 import json
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional
 
 # Project root relative to this script
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
@@ -59,13 +60,19 @@ ALLOWED_EXCEPTIONS = [
 ]
 
 
+@dataclass
 class ValidationResult:
-    """Validation result for a single file."""
-    def __init__(self, file_path: Path):
-        self.file_path = file_path
-        self.errors: List[str] = []
-        self.warnings: List[str] = []
-        self.passed = True
+    """Validation result for a single file - ponytail: replaced class with dataclass."""
+    file_path: Path
+    errors: List[str] = None
+    warnings: List[str] = None
+    passed: bool = True
+
+    def __post_init__(self):
+        if self.errors is None:
+            self.errors = []
+        if self.warnings is None:
+            self.warnings = []
 
     def add_error(self, msg: str):
         self.errors.append(msg)
